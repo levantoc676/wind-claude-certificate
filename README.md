@@ -2,6 +2,12 @@
 
 Trang ôn luyện 3 chứng chỉ Claude (CCDV-F, CCAR-F, CCAR-P): 375 câu hỏi, flashcard, thi thử, học tủ, sổ câu sai, sổ từ vựng và thống kê.
 
+## Giao diện
+
+- **Theme Thường**: font dễ đọc (Inter), dùng mặc định.
+- **Theme Game**: font pixel monospace, khung vuông, có HP, Combo, Level, EXP. Bấm nút ✨/🎮 trên thanh trên cùng để đổi.
+- Nút ☀ đổi giữa chế độ sáng và tối, dùng được với cả hai theme.
+
 ## Cấu trúc
 
 Toàn bộ ứng dụng nằm trong một file tĩnh `index.html`: không cần build, không cần server.
