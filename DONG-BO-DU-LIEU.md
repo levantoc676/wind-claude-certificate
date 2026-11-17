@@ -24,8 +24,24 @@
 - Thêm bộ CCAO-F vào: danh sách Ngân hàng câu hỏi (ký hiệu **AsF**, màu đỏ), bộ lọc Bộ học, tên chứng chỉ khi copy câu hỏi cho AI ("Claude Certified Associate – Foundations (CCAO-F)").
 - CCAO-F dùng được ở mọi tab: Ôn tập, Học theo câu, Flashcards, Học tủ, Sổ tay, Thi thử (kể cả Sổ câu sai), Thống kê.
 
-### Hạn chế của bộ CCAO-F (do dữ liệu nguồn)
+### Hạn chế của bộ CCAO-F lúc mới đồng bộ
 
-- Chỉ có **tiếng Anh**: chưa có bản dịch tiếng Việt cho đề và đáp án. Phần giải thích (phân tích đề, vì sao loại) có sẵn và viết bằng tiếng Việt.
-- **Chưa có mẹo** ("Thấy … → chọn …"), nên panel *Mẹo chọn đáp án* và các thẻ Học tủ của CCAO-F không hiện mẹo.
-- Chưa chia domain chi tiết: cả 119 câu nằm trong một chủ đề, và không có trong tab *Kiến thức thi* (tab này chỉ dành cho CCDV-F).
+- Chỉ có tiếng Anh, chưa có mẹo chọn đáp án. **Đã bổ sung ở Lần 2** (bên dưới).
+- Chưa chia domain chi tiết: cả 119 câu nằm trong một chủ đề, và không có trong tab *Kiến thức thi* (tab này chỉ dành cho CCDV-F). *Vẫn còn.*
+
+## Lần 2: 17/11/2026, bổ sung bản dịch và mẹo cho CCAO-F
+
+Nguồn: tự biên soạn (không có trong dữ liệu gốc).
+
+| Nội dung | Số lượng |
+|---|---|
+| Đề bài dịch tiếng Việt (`stem.vi`) | 119 câu |
+| Đáp án dịch tiếng Việt (`options[].t.vi`) | 119 câu (tất cả phương án) |
+| Mẹo chọn đáp án (`tip`, dạng "Thấy … → chọn …; loại …") | 119 câu |
+| Sửa ký tự lỗi trong đề / đáp án tiếng Anh (`&#x27;` → `'`, `&quot;` → `"`) | 9 chuỗi, đều ở CCAO-F |
+
+- Bản dịch viết lại cho tự nhiên, dễ đọc; giữ nguyên các thuật ngữ sản phẩm quen dùng: Project, custom instructions, Skill, Connector, Memory, Incognito, Artifact, Code Execution, Haiku / Sonnet / Opus, context window, prompt.
+- Câu sắp xếp thứ tự: giữ nguyên dãy số trong đáp án (vd `5, 4, 1, 3, 2`), chỉ dịch các bước trong đề.
+- Mẹo được viết dựa trên đáp án và phần giải thích có sẵn của từng câu. Mẹo hiện ở: panel *Mẹo chọn đáp án* (Học theo câu), *Học tủ* (dòng THẤY + mẹo), sau khi chấm ở *Học theo câu*.
+- Không thay đổi đề, đáp án đúng hay giải thích của bất kỳ câu nào; 375 câu của CCAR-F, CCAR-P, CCDV-F giữ nguyên hoàn toàn.
+- Bản dịch tiếng Nhật (JP) cho CCAO-F chưa có: khi chọn JP, đề CCAO-F sẽ hiện tiếng Anh.
