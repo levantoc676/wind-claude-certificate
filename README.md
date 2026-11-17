@@ -26,5 +26,6 @@ Mở trực tiếp `index.html` bằng trình duyệt.
 
 - Tiến độ được lưu trong `localStorage` của từng trình duyệt.
 - Để chuyển sang máy khác: vào phần **Quản lý dữ liệu học**, bấm **↓ Sao lưu JSON** để tải file. Trên máy mới, bấm **↑ Khôi phục JSON** (gộp với dữ liệu đang có) hoặc **↑ Khôi phục (ghi đè)**.
+- **⇅ Copy / dán text** (ở Sổ câu sai, Học từ mới, Thống kê): tạo một mã `WCC1:…` để gửi qua Zalo/Messenger/email rồi dán vào máy khác. Chọn Sổ câu sai, Sổ từ vựng hoặc Toàn bộ dữ liệu. Muốn máy mới giống hệt thì chọn **Toàn bộ dữ liệu**.
 - **↶ Hoàn tác lần nhập** đưa dữ liệu về trạng thái trước lần nhập gần nhất.
 - File sao lưu gồm: tiến độ từng câu, lịch sử thi, câu đánh dấu, sổ câu sai, học tủ (hộp Leitner), sổ từ, nghĩa tự thêm, tiến độ học từ và điểm HUD.
