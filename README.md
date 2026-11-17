@@ -1,12 +1,16 @@
 # Wind Claude Certificate
 
-Trang ôn luyện 3 chứng chỉ Claude (CCDV-F, CCAR-F, CCAR-P): 375 câu hỏi, flashcard, thi thử, học tủ, sổ câu sai, sổ từ vựng và thống kê.
+Trang ôn luyện 4 chứng chỉ Claude (CCAR-F, CCAR-P, CCDV-F, CCAO-F): 494 câu hỏi, flashcard, thi thử, học tủ, sổ câu sai, sổ từ vựng và thống kê.
 
 ## Giao diện
 
 - **Theme Thường**: font dễ đọc (Inter), dùng mặc định.
 - **Theme Game**: font pixel monospace, khung vuông, có HP, Combo, Level, EXP. Bấm nút ✨/🎮 trên thanh trên cùng để đổi.
 - Nút ☀ đổi giữa chế độ sáng và tối, dùng được với cả hai theme.
+
+## Lịch sử đồng bộ dữ liệu
+
+Xem [DONG-BO-DU-LIEU.md](DONG-BO-DU-LIEU.md) để biết mỗi lần đồng bộ đã thêm hoặc sửa những gì.
 
 ## Cấu trúc
 
