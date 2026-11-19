@@ -530,6 +530,8 @@ body.in-exam .dock{display:none!important}
 .tp-list li b{color:var(--ink)}
 .tp-list .tp-arrow{color:var(--green)}
 .tp-x{color:var(--soft);font-size:12.5px}
+.lq-top{gap:8px}
+.lq-top .mini-count{margin-left:auto}
 .tp-same details summary{cursor:pointer;font-size:13px;color:var(--accent);margin:4px 0 8px}
 @media(max-width:590px){.tp-row{grid-template-columns:1fr;gap:2px}}
 .sync-cm{width:min(980px,100%)}
@@ -1667,7 +1669,7 @@ function renderLearn(){
  const ex=q.explain||{};const exText=ex.text||ex.key||'';
  const res=ck?`<div class="lq-res ${st.ok?'ok':'no'}">${st.ok?'✓ <b>Chính xác!</b>':`✕ <b>Chưa đúng.</b> Đáp án đúng: <b>${q.answer.join(', ')}</b>.`}${q.tip?`<div style="margin-top:6px">🎯 ${see?`<b>Thấy</b> ${esc(see)} → `:''}${esc(act)}</div>`:''}</div>${exText?`<details class="lq-exp" ${st.ok?'':'open'}><summary>Giải thích chi tiết</summary><p>${exText}</p>${ex.elim&&ex.elim.length?`<ul>${ex.elim.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}</details>`:''}`:'';
  const kp=tipPanel(q,ck);
- return head+filterBar()+`<div class="learn-wrap${kp?'':' nopanel'}"><div class="learn ${skin}"><div class="lq-top">${UI.kpanel===false?'<button class="btn mini" data-action="kpanelToggle">🎯 Hiện mẹo chọn đáp án</button>':''}<span class="mini-count">Câu <b>${i+1}</b> / ${list.length} · ${p.attempts?`đã làm ${p.attempts} lần`:'chưa làm'}</span></div>${hudHTML()}
+ return head+filterBar()+`<div class="learn-wrap${kp?'':' nopanel'}"><div class="learn ${skin}"><div class="lq-top">${starToolsHTML()}${UI.kpanel===false?'<button class="btn mini" data-action="kpanelToggle">🎯 Hiện mẹo chọn đáp án</button>':''}<span class="mini-count">Câu <b>${i+1}</b> / ${list.length} · ${p.attempts?`đã làm ${p.attempts} lần`:'chưa làm'}</span></div>${hudHTML()}
  <article class="lq-card" data-question="${esc(q.id)}"><div class="lq-head"><span class="q-number">#${String(q.n).padStart(3,'0')}</span>${pill(q.bank)}${pill(domainLabel(q))}${q.multi?pill('Chọn '+q.answer.length+' đáp án','accent'):''}<div class="q-actions"><button class="roundact star ${p.star?'on':''}" data-action="star" data-id="${esc(q.id)}" title="Đánh dấu">${p.star?'★':'☆'}</button><button class="roundact" data-action="copyOne" data-id="${esc(q.id)}" title="Copy câu này để hỏi AI">⧉ Copy</button></div></div>
  <div class="lq-body"><div class="lq-stem">${wrapWords(q.stem.en||'')}</div>${showVI&&q.stem.vi?`<div class="lq-vi">🇻🇳 ${esc(q.stem.vi)}</div>`:''}<div class="lq-opts">${opts}</div>${res}</div>
  <div class="lq-bar"><button class="btn mini" data-action="learnNav" data-d="-1" ${i<=0?'disabled':''}>← Câu trước</button>${!ck&&q.multi?`<button class="btn primary mini" data-action="learnCheck" ${st.picks.length?'':'disabled'}>Chấm đáp án</button>`:''}${ck?`<button class="btn mini" data-action="learnRetry">↺ Làm lại</button>`:''}<button class="btn mini" data-action="learnVI">${UI.learnVI?'Ẩn bản dịch':'🇻🇳 Hiện bản dịch'}</button><span class="sp"></span><button class="btn ${ck?'primary':''} mini" data-action="learnNav" data-d="1" ${i>=list.length-1?'disabled':''}>Câu tiếp →</button></div></article>
@@ -2337,6 +2339,30 @@ document.addEventListener('click',async e=>{
 document.addEventListener('change',e=>{if(e.target&&e.target.name==='syncScope'){if(e.target.value==='all'&&e.target.checked)document.querySelectorAll('#syncModal input[name=syncScope]').forEach(x=>{if(x.value!=='all')x.checked=false});else if(e.target.checked){const a=document.querySelector('#syncModal input[value=all]');if(a)a.checked=false}syncWarn()}});
 document.addEventListener('input',e=>{if(e.target&&e.target.id==='syncIn'){const i=$('#syncInfo');try{const o=syncParse(e.target.value);i.textContent='✓ Mã hợp lệ: '+(o.scopes||[]).map(k=>SYNC_SCOPES[k]?.label||k).join(' + ')+' · tạo lúc '+new Date(o.exportedAt).toLocaleString('vi-VN')}catch(err){i.textContent=e.target.value.trim()?'✕ '+err.message:''}}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#syncModal')?.remove()});
+</script>
+<script>
+/* ===== Học theo câu: bỏ đánh dấu ★ tất cả câu ===== */
+let STAR_UNDO=null;
+const starredIds=()=>Object.keys(P).filter(id=>P[id]&&P[id].star&&INDEX[id]);
+function starToolsHTML(){
+ const n=starredIds().length;
+ return `${n?`<button class="btn mini danger" data-action="starClearAll" title="Bỏ dấu ★ ở mọi câu đã đánh dấu (mọi bộ học)">☆ Bỏ đánh dấu tất cả (${n})</button>`:''}${STAR_UNDO?`<button class="btn mini" data-action="starUndo" title="Đánh dấu lại các câu vừa bỏ">↶ Hoàn tác (${STAR_UNDO.length})</button>`:''}`;
+}
+document.addEventListener('click',e=>{
+ const b=e.target.closest&&e.target.closest('[data-action=starClearAll],[data-action=starUndo]');if(!b)return;
+ e.stopPropagation();
+ if(b.dataset.action==='starClearAll'){
+  const ids=starredIds();if(!ids.length)return;
+  if(!safeConfirm(`Bỏ đánh dấu ★ ở cả ${ids.length} câu (mọi bộ học)? Bạn có thể bấm Hoàn tác ngay sau đó.`))return;
+  for(const id of ids)P[id].star=false;
+  STAR_UNDO=ids;save();
+  if(UI.status==='star'){UI.status='all';UI.learnId=null}
+  render();toast(`Đã bỏ đánh dấu ${ids.length} câu.`);
+ }else{
+  const ids=STAR_UNDO||[];for(const id of ids)progress(id).star=true;
+  STAR_UNDO=null;save();render();toast(`Đã đánh dấu lại ${ids.length} câu.`);
+ }
+},true);
 </script>
 </body>
 </html>
