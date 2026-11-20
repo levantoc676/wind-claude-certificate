@@ -107,3 +107,16 @@ Mã chủ đề AP của bộ CCAR-P (AP = **A**rchitect **P**rofessional) trư�
 - Chỉ đổi mã và tên chủ đề. Mã câu (`CCAR-P:ccarp-q…`), đề, đáp án và tiến độ học không đổi.
 - Nếu trình duyệt đang lọc theo một chủ đề CCAR-P cũ, bộ lọc được tự chuyển sang mã mới (một lần).
 - Tab Mẹo thi giờ ghi "D1 = AP1", "D2 = AP2"…
+
+## Lần 7: 20/11/2026, thêm tab "Học tủ CCAR-P"
+
+- Đủ 116/116 câu CCAR-P, xếp theo AP1–AP7. Mỗi câu một dòng: **key trong đề → key đáp án**. Câu nhiều đáp án có nhãn [Chọn 2].
+- 12 câu AP1 lấy theo danh sách bạn gửi; 104 câu còn lại do Claude soạn theo cùng quy tắc.
+- Đã kiểm tra bằng máy:
+  - Mỗi key trong đề chỉ có ở đúng câu đó. Ngoại lệ là 3 cặp câu giống hệt nhau: #092/#108, #098/#105, #058/#109.
+  - Mỗi key đáp án có trong đáp án đúng và không có trong đáp án sai. Ngoại lệ là các câu Yes/No và câu ghép thứ tự, nơi key chính là đáp án.
+- Sửa 2 chỗ so với danh sách bạn gửi:
+  - #015: đề ghi "40 percent", không phải "40%".
+  - #017 (BM25): đáp án đúng trong dữ liệu là Yes-Yes-Yes-No-No (5 phát biểu), không phải Yes-Yes-No-No.
+- Có thêm mục "Mẹo câu Yes / No".
+- Ở Ôn tập câu hỏi, câu CCAR-P có thêm dòng "✎ Học tủ" trong panel Mẹo.
