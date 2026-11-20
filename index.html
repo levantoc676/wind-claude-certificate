@@ -683,6 +683,25 @@ body.in-tips .dock{display:none!important}
  .cr-a{grid-column:2}
  .cr-a:before{content:"→ ";color:var(--green)}
 }
+/* Panel mẹo: học tủ nổi bật, dịch ngắn gọn, mẹo cùng chủ đề thu gọn */
+.cr-inpanel{margin:2px 0 14px;padding:12px 14px;border-radius:12px;border:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface));box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 10%,transparent)}
+.cr-inpanel h4{margin:0 0 6px;font-size:13px;letter-spacing:.02em;color:var(--accent)}
+.cr-inpanel p{margin:0;font-size:15px;line-height:1.6}
+.cr-inpanel .cr-k{font-size:15px}
+.tp-trans{margin-top:14px;padding-top:12px;border-top:1px solid var(--stroke)}
+.tp-trans h4{margin:0 0 8px;font-size:14px}
+.tp-ask{font-size:14px;line-height:1.65;margin:0 0 6px;color:var(--ink)}
+.tp-ctx summary{cursor:pointer;font-size:12.5px;color:var(--soft);margin-bottom:4px}
+.tp-ctx p{font-size:13px;line-height:1.6;color:var(--muted);margin:4px 0 6px}
+.tp-opts{list-style:none;margin:6px 0 0;padding:0}
+.tp-opts li{font-size:13.5px;line-height:1.55;color:var(--muted);margin-bottom:6px}
+.tp-opts b{color:var(--ink)}
+details.tp-fold{margin-top:14px;padding-top:10px;border-top:1px solid var(--stroke)}
+details.tp-fold>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer}
+details.tp-fold>summary::-webkit-details-marker{display:none}
+details.tp-fold>summary h4{margin:0}
+.tp-fold-lbl{font-size:12px;font-weight:700;color:var(--accent);border:1px solid var(--stroke2);border-radius:999px;padding:2px 10px}
+details.tp-fold .tp-list{margin-top:10px}
 </style>
 </head>
 <body>
@@ -2404,6 +2423,20 @@ function wccUndo(){
 <script>
 /* ===== Học theo câu: panel "Mẹo chọn đáp án" ===== */
 const TP_OPEN=new Set();
+let TP_SAME_OPEN=false;
+document.addEventListener('toggle',e=>{const d=e.target;if(d&&d.classList&&d.classList.contains('tp-fold')){TP_SAME_OPEN=d.open;const l=d.querySelector('.tp-fold-lbl');if(l)l.textContent=d.open?'Thu gọn':'Mở'}},true);
+/* Dịch ngắn gọn: câu hỏi chính + các đáp án bằng tiếng Việt */
+function tpTransHTML(q){
+ const vi=q.stem&&q.stem.vi;if(!vi)return '';
+ const txt=String(vi).replace(/\s+/g,' ').trim();
+ const sents=txt.split(/(?<=[.?!:])\s+(?=[A-ZÀ-Ỹ(“"])/u).map(x=>x.trim()).filter(Boolean);
+ let ask=sents.filter(x=>/\?\s*(\(.*\))?$/.test(x)&&!/^\(/.test(x)).join(' ');
+ if(!ask)ask=sents.filter(x=>!/^\(/.test(x)&&/(chọn|phân loại|xếp|sắp|cho biết|xác định)/i.test(x)).slice(-2).join(' ');
+ if(!ask)ask=sents.filter(x=>!/^\(/.test(x)).slice(-1).join(' ')||txt;
+ const rest=String(vi).replace(ask,'').trim();
+ const opts=q.options.map(o=>`<li><b>${esc(o.k)}.</b> ${esc(o.t.vi||o.t.en||'')}</li>`).join('');
+ return `<div class="tp-trans"><h4>🇻🇳 Dịch ngắn gọn</h4><p class="tp-ask"><b>Hỏi:</b> ${esc(ask)}</p>${rest?`<details class="tp-ctx"><summary>Bối cảnh của đề</summary><p>${esc(rest)}</p></details>`:''}<ul class="tp-opts">${opts}</ul></div>`;
+}
 function tipSplit(t){
  const {see,act}=tipParts(t||'');
  const m=act.match(/[;.]\s*((?:loại|tránh|bỏ|không chọn|đừng)\b[\s\S]*)$/i);
@@ -2424,7 +2457,8 @@ function tipPanel(q,checked){
  const li=x=>{const t=tipSplit(x.tip);return `<li>${t.see?`<b>Nếu đề có</b> ${esc(t.see)} <b class="tp-arrow">→ chọn</b> ${esc(t.choose)}`:esc(x.tip)}${t.elim?` <span class="tp-x">(loại: ${esc(t.elim)})</span>`:''}</li>`};
  return `<aside class="kpanel tpanel" aria-label="Mẹo chọn đáp án"><div class="kph"><div><span class="eyebrow" style="margin-bottom:4px">Mẹo chọn đáp án</span><h3>🎯 Câu này</h3><p>${esc(categoryName(q))}</p></div><button class="iconbtn" data-action="kpanelToggle" title="Ẩn panel mẹo" aria-label="Ẩn panel mẹo">✕</button></div>
  ${q.tip?(open?tipRuleHTML(q,true):`<button type="button" class="tp-veil" data-action="tipReveal" data-id="${esc(q.id)}">${tipRuleHTML(q,false)}<span class="tp-veil-lbl">👁 Bấm để xem mẹo<small>Mẹo có thể làm lộ đáp án. Hãy thử tự chọn trước.</small></span></button>`):'<p class="tiny">Câu này chưa có mẹo.</p>'}
- ${same.length?`<div class="tp-same"><h4>📚 Mẹo cùng chủ đề <span class="tiny">(${same.length})</span></h4><ul class="tp-list">${same.slice(0,6).map(li).join('')}</ul>${same.length>6?`<details><summary>Xem thêm ${same.length-6} mẹo</summary><ul class="tp-list">${same.slice(6).map(li).join('')}</ul></details>`:''}</div>`:''}
+ ${tpTransHTML(q)}
+ ${same.length?`<details class="tp-same tp-fold" ${TP_SAME_OPEN?'open':''}><summary><h4>📚 Mẹo cùng chủ đề <span class="tiny">(${same.length})</span></h4><span class="tp-fold-lbl">${TP_SAME_OPEN?'Thu gọn':'Mở'}</span></summary><ul class="tp-list">${same.map(li).join('')}</ul></details>`:''}
  </aside>`;
 }
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-action=tipReveal]');if(!b)return;e.stopPropagation();TP_OPEN.add(b.dataset.id);renderContentKeepScroll()},true);
@@ -2656,8 +2690,8 @@ document.addEventListener('input',e=>{if(e.target&&e.target.id==='crSearch'){con
  document.querySelectorAll('.cr-sec').forEach(sec=>sec.style.display=[...sec.querySelectorAll('.cr-row')].some(r=>r.style.display!=='none')?'':'none')}});
 /* Ôn tập câu hỏi: câu CCAR-P hiện dòng học tủ trong panel Mẹo (sau khi mở mẹo hoặc trả lời) */
 {const _tp=tipPanel;tipPanel=function(q,checked){const h=_tp(q,checked),c=CRAMP_BY_ID[q.id];if(!h||!c)return h;
- const open=checked||TP_OPEN.has(q.id);const k=h.indexOf('<div class="tp-same">')>=0?h.indexOf('<div class="tp-same">'):h.lastIndexOf('</aside>');
- return h.slice(0,k)+`<div class="tp-same cr-inpanel"><h4>✎ Học tủ</h4>${open?`<p><b class="cr-k">${esc(c.k)}</b> → ${crampAns(q,c)}</p>`:'<p class="tiny">Mở mẹo phía trên (hoặc trả lời xong) để xem.</p>'}</div>`+h.slice(k)}}
+ const open=checked||TP_OPEN.has(q.id);const hd=h.indexOf('class="kph"'),k=h.indexOf('</button></div>',hd)+'</button></div>'.length;
+ return h.slice(0,k)+`<div class="cr-inpanel"><h4>✎ Học tủ</h4><p><b class="cr-k">${esc(c.k)}</b> <span class="cr-arrow">→</span> <span class="cr-a ${open?'':'veil'}" title="${open?'':'Bấm để xem'}">${crampAns(q,c)}</span></p></div>`+h.slice(k)}}
 </script>
 </body>
 </html>
