@@ -602,6 +602,15 @@ body.in-exam .exam-2col,body.in-exam .exam-2col>.exam-shell,body.in-exam .wr-sec
 body.in-exam .exam-2col{gap:16px}
 body.in-learn .dock{display:none!important}
 @media(min-width:1500px){body.in-learn .learn-main .learn-wrap{grid-template-columns:minmax(0,1fr) 380px!important}}
+/* các khối cố định khi cuộn: dừng đúng chỗ ban đầu */
+@media(min-width:1180px){
+ .learn-side{top:var(--stick,110px)!important;max-height:calc(100vh - var(--stick,110px) - 16px)!important}
+ .learn-wrap .kpanel{top:var(--stick,110px)!important;max-height:calc(100vh - var(--stick,110px) - 16px)!important}
+ .learn-main .learn-wrap:not(.nopanel){min-height:calc(100vh - var(--stick,110px) + 90px)}
+}
+.exam-nav{top:var(--stick,110px)!important;max-height:calc(100vh - var(--stick,110px) - 16px)!important}
+.ex-status{top:var(--stick,110px)!important}
+@media(max-width:900px){.ex-status{top:var(--stick,64px)!important}}
 </style>
 </head>
 <body>
@@ -2477,6 +2486,15 @@ jumpQuestion=function(id){const q=INDEX[id];if(!q)return;UI.bank=q.bank;UI.topic
  const nav=rest.lastIndexOf('<nav class="lq-fixnav"'),tail=nav>=0?rest.slice(nav):'',body=nav>=0?rest.slice(0,nav):rest;
  return `<div class="learn-layout"><aside class="learn-side">${fb}${cnt?`<div class="learn-count">${cnt}</div>`:''}</aside><div class="learn-main">${body}</div></div>${tail}`;
 }}
+</script>
+<script>
+/* ===== Vị trí "dính" khi cuộn = đúng vị trí ban đầu (thanh trên cùng + khoảng đệm), không nhích ===== */
+function updateStick(){try{const tb=document.querySelector('.topbar'),mw=document.querySelector('.mainwrap');if(!tb||!mw)return;
+ const v=Math.round(tb.getBoundingClientRect().height+parseFloat(getComputedStyle(mw).paddingTop||0));
+ document.documentElement.style.setProperty('--stick',v+'px')}catch{}}
+{const _r=render;render=function(){_r();updateStick()}}
+window.addEventListener('resize',()=>{clearTimeout(window.__stk);window.__stk=setTimeout(updateStick,100)},{passive:true});
+updateStick();
 </script>
 </body>
 </html>
