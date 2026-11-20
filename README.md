@@ -1,6 +1,6 @@
 # Wind Claude Certificate
 
-Trang ôn luyện 4 chứng chỉ Claude (CCAR-F, CCAR-P, CCDV-F, CCAO-F): 494 câu hỏi, flashcard, thi thử, học tủ, sổ câu sai, sổ từ vựng và thống kê.
+Trang ôn luyện 4 chứng chỉ Claude (CCAR-F, CCAR-P, CCDV-F, CCAO-F): 489 câu hỏi, flashcard, thi thử, học tủ, sổ câu sai, sổ từ vựng và thống kê.
 
 ## Giao diện
 
