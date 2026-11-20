@@ -594,6 +594,14 @@ html:not([data-skin=game]) .eyebrow,html:not([data-skin=game]) .side-label,html:
  .learn-main .learn-wrap{grid-template-columns:minmax(0,1fr) 340px!important}
 }
 @media(min-width:1180px) and (max-width:1279px){.learn-main .learn-wrap{display:block!important}.learn-main .kpanel{position:static;max-height:none;margin-top:16px}}
+/* Ôn tập + Thi thử: dùng hết chiều ngang, bộ lọc sát trái, mẹo / điều hướng sát phải */
+body.in-learn .mainwrap,body.in-exam .mainwrap{max-width:none;padding-left:16px;padding-right:16px}
+body.in-learn .learn-layout{gap:16px}
+body.in-learn .learn-main .learn-wrap{gap:16px}
+body.in-exam .exam-2col,body.in-exam .exam-2col>.exam-shell,body.in-exam .wr-sec,body.in-exam .wr-sec:has(.xr-2col),body.in-exam .result-panel,body.in-exam .exam-setup{max-width:none!important}
+body.in-exam .exam-2col{gap:16px}
+body.in-learn .dock{display:none!important}
+@media(min-width:1500px){body.in-learn .learn-main .learn-wrap{grid-template-columns:minmax(0,1fr) 380px!important}}
 </style>
 </head>
 <body>
