@@ -2472,7 +2472,7 @@ jumpQuestion=function(id){const q=INDEX[id];if(!q)return;UI.bank=q.bank;UI.topic
  const html=_rl2(),fb=filterBar(),k=html.indexOf(fb);
  if(k<0)return html;
  let rest=html.slice(0,k)+html.slice(k+fb.length);
- const m=rest.match(/<span class="mini-count">[\s\S]*?<\/span><\/span>|<span class="mini-count">[\s\S]*?<\/span>/);
+ const m=rest.match(/<span class="mini-count">(?:(?!<\/?span)[\s\S])*<\/span>/);
  let cnt='';if(m){cnt=m[0];rest=rest.replace(cnt,'')}
  const nav=rest.lastIndexOf('<nav class="lq-fixnav"'),tail=nav>=0?rest.slice(nav):'',body=nav>=0?rest.slice(0,nav):rest;
  return `<div class="learn-layout"><aside class="learn-side">${fb}${cnt?`<div class="learn-count">${cnt}</div>`:''}</aside><div class="learn-main">${body}</div></div>${tail}`;
