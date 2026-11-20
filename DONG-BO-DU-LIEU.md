@@ -45,3 +45,27 @@ Nguồn: tự biên soạn (không có trong dữ liệu gốc).
 - Mẹo được viết dựa trên đáp án và phần giải thích có sẵn của từng câu. Mẹo hiện ở: panel *Mẹo chọn đáp án* (Học theo câu), *Học tủ* (dòng THẤY + mẹo), sau khi chấm ở *Học theo câu*.
 - Không thay đổi đề, đáp án đúng hay giải thích của bất kỳ câu nào; 375 câu của CCAR-F, CCAR-P, CCDV-F giữ nguyên hoàn toàn.
 - Bản dịch tiếng Nhật (JP) cho CCAO-F chưa có: khi chọn JP, đề CCAO-F sẽ hiện tiếng Anh.
+
+## Lần 3: 20/11/2026, đánh dấu 13 câu "hay quên" kèm ghi nhớ
+
+Nguồn: danh sách câu bạn gửi (file ghi chú). Cả 13 câu đều có sẵn trong bộ CCDV-F; dữ liệu câu hỏi, đáp án, giải thích không đổi. Mỗi câu được thêm trường `forget: true`; câu nào có ghi chú thì thêm trường `memo`.
+
+| Câu | Chủ đề đề bài | Đáp án | Ghi nhớ của bạn |
+|---|---|---|---|
+| CCDV-F #048 | Tích hợp API trực tiếp hay qua lớp abstraction đa nhà cung cấp | D | Phải tích hợp trực tiếp qua SDK |
+| CCDV-F #026 | Hợp đồng 50 trang: xử lý cả tài liệu hay chia nhỏ | B | Hợp đồng 50 trang → “Identify which property matters” |
+| CCDV-F #086 | Chiến lược guardrail | A | Đề có guardrail → “Layer multiple guardrails” |
+| CCDV-F #019 | Structured output làm sập code phía sau | D | Đề có crash → đáp án có “crash on” ở cuối câu |
+| CCDV-F #015 | Roll out thay đổi prompt cho nhiều hệ thống phía sau | A | Đề có roll out → đáp án có “owners as needed” |
+| CCDV-F #027 | Nhiều API call giờ hành chính, lo rate limit | C | API calls during business hours → “Identify the rate limits” |
+| CCDV-F #021 | Lỗi validation đang bị coi là lỗi chặn | C | Đề lỗi validation → “Treat validation failures…” |
+| CCDV-F #089 | Multi-agent: subagent gọi tool trùng, vượt token, mâu thuẫn | C | (chưa có ghi chú) |
+| CCDV-F #035 | Văn bản người dùng có số tài khoản, mật khẩu | A | (chưa có ghi chú) |
+| CCDV-F #097 | Thực thi content policy | D | (chưa có ghi chú) |
+| CCDV-F #076 | Chuyển mục tiêu nghiệp vụ thành yêu cầu kỹ thuật | D | (chưa có ghi chú) |
+| CCDV-F #018 | Chính thức hóa chiến lược kiểm thử | B | (chưa có ghi chú) |
+| CCDV-F #045 | Đầu ra không nhất quán, cần gỡ lỗi có hệ thống | D | (chưa có ghi chú) |
+
+Ghi chú được sửa nhẹ lỗi gõ khi đưa vào (vd “Identity property” → “Identify which property”, “mutiples” → “multiple”).
+
+Ngoài 13 câu trên, bạn có thể tự bật/tắt 🧠 Hay quên cho bất kỳ câu nào; lựa chọn đó lưu trong trình duyệt (khóa `claude.study.atlas.forget.v1`) và đi kèm khi Sao lưu / Copy text dữ liệu.
