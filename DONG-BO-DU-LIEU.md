@@ -120,3 +120,20 @@ Mã chủ đề AP của bộ CCAR-P (AP = **A**rchitect **P**rofessional) trư�
   - #017 (BM25): đáp án đúng trong dữ liệu là Yes-Yes-Yes-No-No (5 phát biểu), không phải Yes-Yes-No-No.
 - Có thêm mục "Mẹo câu Yes / No".
 - Ở Ôn tập câu hỏi, câu CCAR-P có thêm dòng "✎ Học tủ" trong panel Mẹo.
+
+## Lần 8: 20/11/2026, bỏ 5 câu trùng (494 → 489 câu)
+
+Đã so cả 494 câu của 4 bộ, tính là trùng khi cùng đề, cùng các phương án và cùng đáp án đúng (không phân biệt hoa/thường, dấu câu). Có 5 câu trùng, đều trùng trong cùng một bộ. Giữ câu có số nhỏ hơn, bỏ câu sau:
+
+| Bỏ | Giữ lại |
+|---|---|
+| CCAR-P #109 | CCAR-P #058 |
+| CCAR-P #108 | CCAR-P #092 |
+| CCAR-P #105 | CCAR-P #098 |
+| CCDV-F #047 | CCDV-F #002 |
+| CCDV-F #067 | CCDV-F #003 |
+
+- Số câu mới: CCAR-F 162, CCAR-P 113, CCDV-F 95, CCAO-F 119, tổng 489. Số thứ tự (#) của các câu còn lại giữ nguyên, nên sẽ có chỗ nhảy số.
+- Tiến độ học, sổ câu sai, ★, hay quên… của câu bị bỏ được tự chuyển sang câu giữ lại (một lần, khi mở web). Nếu câu giữ lại đã có dữ liệu riêng thì giữ dữ liệu đó.
+- Tab Mẹo thi và Học tủ CCAR-P cũng bỏ 3 câu CCAR-P trùng (Học tủ còn 113 dòng).
+- Mã dữ liệu cũ (WCC1:…) tạo trước lần này vẫn nhập được; câu bị bỏ trong mã đó sẽ được bỏ qua.
