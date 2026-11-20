@@ -46,7 +46,15 @@ Nguồn: tự biên soạn (không có trong dữ liệu gốc).
 - Không thay đổi đề, đáp án đúng hay giải thích của bất kỳ câu nào; 375 câu của CCAR-F, CCAR-P, CCDV-F giữ nguyên hoàn toàn.
 - Bản dịch tiếng Nhật (JP) cho CCAO-F chưa có: khi chọn JP, đề CCAO-F sẽ hiện tiếng Anh.
 
-## Lần 3: 20/11/2026, đánh dấu 13 câu "hay quên" kèm ghi nhớ
+## Lần 3: 18/11/2026, đưa bản Vercel lên link artifact
+
+- Nguồn: repo công khai `github.com/levantoc676/wind-claude-certificate`, commit `8e9e571` (bản đang chạy ở https://wind-claude-certificate.vercel.app/).
+- Link artifact https://claude.ai/artifact/1q3qpVrDmcKmeab5eSmgWb đã thay bằng đúng file `index.html` của repo, đổi tên thành "Wind Claude Certificate": 494 câu, 4 chứng chỉ, 2 theme Thường/Game, chuyển dữ liệu bằng mã `WCC1:…`.
+- Phần lưu tiến độ lên tài khoản Claude (đồng bộ giữa các máy) vẫn hoạt động: đã kiểm tra lưu, tải lại ở máy khác và gộp dữ liệu hai máy.
+- Lưu ý: trong link artifact, nút **↓ Sao lưu JSON** (tải file) không chạy vì khung artifact chặn tải file. Dùng **⇅ Copy / dán text** thay thế.
+- Từ nay khi sửa web: sửa trên repo trước, rồi cập nhật artifact từ repo để hai bản luôn giống nhau.
+
+## Lần 4: 20/11/2026, đánh dấu 13 câu "hay quên" kèm ghi nhớ
 
 Nguồn: danh sách câu bạn gửi (file ghi chú). Cả 13 câu đều có sẵn trong bộ CCDV-F; dữ liệu câu hỏi, đáp án, giải thích không đổi. Mỗi câu được thêm trường `forget: true`; câu nào có ghi chú thì thêm trường `memo`.
 
@@ -69,3 +77,5 @@ Nguồn: danh sách câu bạn gửi (file ghi chú). Cả 13 câu đều có s�
 Ghi chú được sửa nhẹ lỗi gõ khi đưa vào (vd “Identity property” → “Identify which property”, “mutiples” → “multiple”).
 
 Ngoài 13 câu trên, bạn có thể tự bật/tắt 🧠 Hay quên cho bất kỳ câu nào; lựa chọn đó lưu trong trình duyệt (khóa `claude.study.atlas.forget.v1`) và đi kèm khi Sao lưu / Copy text dữ liệu.
+
+- Bản trên Vercel (commit `1db4a6e`) đã có phần này. **Link artifact vẫn là bản Lần 3** (chưa có nút bỏ đánh dấu ★ hàng loạt và câu hay quên) cho tới khi được cập nhật lại từ repo.
