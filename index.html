@@ -576,6 +576,24 @@ html:not([data-skin=game]) .eyebrow,html:not([data-skin=game]) .side-label,html:
 .viewhead>div:first-child:has(>h1){display:none}
 .viewhead:not(:has(>:nth-child(2))){display:none}
 .viewhead{justify-content:flex-end;margin-bottom:14px}
+/* bố cục Ôn tập câu hỏi: cột trái bộ lọc */
+.learn-layout{display:block}
+.learn-side .filters{margin-bottom:10px}
+.learn-count{margin:0 0 12px;text-align:left}
+.learn-count .mini-count{margin:0!important;font-size:14px;color:var(--muted)}.learn-count .mini-count b{color:var(--ink)}
+.learn-main .lq-top:empty{display:none}
+.learn-main .lq-top{justify-content:flex-start}
+@media(min-width:1180px){
+ .learn-layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:20px;align-items:start}
+ .learn-side{position:sticky;top:92px;max-height:calc(100vh - 110px);overflow:auto}
+ .learn-side .filters{flex-direction:column;align-items:stretch;gap:12px;padding:14px}
+ .learn-side .filters .sep{display:none}
+ .learn-side .select-group{flex-direction:column;align-items:stretch;gap:5px}
+ .learn-side .select-group select{max-width:none;width:100%}
+ .learn-side .learn-count{padding:0 4px}
+ .learn-main .learn-wrap{grid-template-columns:minmax(0,1fr) 340px!important}
+}
+@media(min-width:1180px) and (max-width:1279px){.learn-main .learn-wrap{display:block!important}.learn-main .kpanel{position:static;max-height:none;margin-top:16px}}
 </style>
 </head>
 <body>
@@ -2439,6 +2457,18 @@ function learnFixNavHTML(){
 <script>
 /* ===== Chỉ giữ 5 tab: Ôn tập câu hỏi (trước là Học theo câu), Flashcards, Học từ mới, Thi thử, Thống kê ===== */
 jumpQuestion=function(id){const q=INDEX[id];if(!q)return;UI.bank=q.bank;UI.topic='all';UI.status='all';UI.search='';UI.learnId=id;UI.view='learn';save();render();window.scrollTo({top:0,behavior:'instant'})};
+</script>
+<script>
+/* ===== Ôn tập câu hỏi: bộ lọc + số câu ở cột trái, cố định khi cuộn ===== */
+{const _rl2=renderLearn;renderLearn=function(){
+ const html=_rl2(),fb=filterBar(),k=html.indexOf(fb);
+ if(k<0)return html;
+ let rest=html.slice(0,k)+html.slice(k+fb.length);
+ const m=rest.match(/<span class="mini-count">[\s\S]*?<\/span><\/span>|<span class="mini-count">[\s\S]*?<\/span>/);
+ let cnt='';if(m){cnt=m[0];rest=rest.replace(cnt,'')}
+ const nav=rest.lastIndexOf('<nav class="lq-fixnav"'),tail=nav>=0?rest.slice(nav):'',body=nav>=0?rest.slice(0,nav):rest;
+ return `<div class="learn-layout"><aside class="learn-side">${fb}${cnt?`<div class="learn-count">${cnt}</div>`:''}</aside><div class="learn-main">${body}</div></div>${tail}`;
+}}
 </script>
 </body>
 </html>
