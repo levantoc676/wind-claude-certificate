@@ -553,6 +553,15 @@ body.in-exam .dock{display:none!important}
 .lg-fg{background:#b26bff}
 .fg-strip{border-color:color-mix(in srgb,#b26bff 50%,transparent)}.fg-strip .symbol{color:#b26bff}
 .ex-fg{margin-left:auto}.ex-fg+.ex-flag{margin-left:0}
+.lq-fixnav{display:none}
+@media(max-width:760px){
+ .lq-fixnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:45;gap:10px;align-items:center;justify-content:space-between;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(12px);border-top:1px solid var(--stroke2);box-shadow:0 -6px 20px #0003}
+ .lq-fixnav .btn{flex:1;padding:13px 10px;font-size:14px;min-height:46px}
+ .lq-fixpos{font-weight:800;font-size:14px;white-space:nowrap;color:var(--ink)}
+ .lq-fixpos small{color:var(--soft);font-weight:600}
+ body.in-learn .mainwrap{padding-bottom:100px}
+ body.in-learn .dock{display:none!important}
+}
 </style>
 </head>
 <body>
@@ -2399,6 +2408,16 @@ document.addEventListener('click',e=>{
  if(a==='examForgetOnly'){const ids=forgetIds();if(!ids.length)return;if(EXAM&&!EXAM.done&&!safeConfirm('Đang có bài thi dở. Bỏ bài đó để thi các câu hay quên?'))return;
   EXAM=null;WRONG_ONLY=ids;const c=UI.count;UI.count=ids.length;try{startExam()}finally{WRONG_ONLY=null;UI.count=c}UI.view='exam';save();render();window.scrollTo({top:0});return}
 },true);
+</script>
+<script>
+/* ===== Học theo câu: thanh chuyển câu cố định ở cuối màn hình (điện thoại) ===== */
+function learnFixNavHTML(){
+ const list=learnList();if(!list.length)return '';
+ const {i}=learnQ(list);
+ return `<nav class="lq-fixnav" aria-label="Chuyển câu"><button type="button" class="btn" data-action="learnNav" data-d="-1" ${i<=0?'disabled':''}>← Câu trước</button><span class="lq-fixpos">${i+1}<small> / ${list.length}</small></span><button type="button" class="btn primary" data-action="learnNav" data-d="1" ${i>=list.length-1?'disabled':''}>Câu tiếp →</button></nav>`;
+}
+{const _rl=renderLearn;renderLearn=function(){return _rl()+learnFixNavHTML()}}
+{const _r=render;render=function(){_r();document.body.classList.toggle('in-learn',UI.view==='learn')};document.body.classList.toggle('in-learn',UI.view==='learn')}
 </script>
 </body>
 </html>
