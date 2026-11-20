@@ -89,3 +89,21 @@ Nguồn: file *CCAR Exam Tips* (bạn tải lên), tổng hợp từ claudecerti
 - Gắn mẹo với câu hỏi theo domain: D1→AP2, D2→AP6, D3→AP1, D4→AP3, D5→AP4, D6→AP5, D7→AP7. 104/146 mẹo có số câu đi kèm; 113/116 câu CCAR-P có ít nhất một mẹo. Việc gắn này do Claude đối chiếu nội dung đề và đáp án, nên có thể có chỗ chưa khớp.
 - Ở Ôn tập câu hỏi, câu CCAR-P nào có mẹo gắn kèm thì panel Mẹo có thêm mục "Mẹo thi CCAR-P liên quan".
 - Không đổi dữ liệu câu hỏi hay dữ liệu học của bạn.
+
+## Lần 6: 20/11/2026, đánh số lại chủ đề CCAR-P theo domain của đề thi
+
+Mã chủ đề AP của bộ CCAR-P (AP = **A**rchitect **P**rofessional) trước đây đánh số theo nguồn dữ liệu cũ, không khớp với thứ tự domain D1–D7 trong exam guide. Nay đổi để **APn = Dn**, kèm trọng số trong đề:
+
+| Mới | Domain | Trọng số | Số câu | Mã cũ |
+|---|---|---|---|---|
+| AP1 | Solution Design & Architecture | 17% | 12 | AP2 |
+| AP2 | Claude Models, Prompting & Context Engineering | 13% | 8 | AP6 |
+| AP3 | Integration | 19% | 3 | AP1 |
+| AP4 | Evaluation, Testing & Optimization | 16% | 20 | AP3 |
+| AP5 | Governance, Safety & Risk | 14% | 32 | AP4 |
+| AP6 | Stakeholder Communication & Lifecycle | 14% | 21 | AP5 |
+| AP7 | Developer Productivity & Operational Enablement | 7% | 20 | AP7 |
+
+- Chỉ đổi mã và tên chủ đề. Mã câu (`CCAR-P:ccarp-q…`), đề, đáp án và tiến độ học không đổi.
+- Nếu trình duyệt đang lọc theo một chủ đề CCAR-P cũ, bộ lọc được tự chuyển sang mã mới (một lần).
+- Tab Mẹo thi giờ ghi "D1 = AP1", "D2 = AP2"…
