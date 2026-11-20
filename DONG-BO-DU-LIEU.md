@@ -79,3 +79,13 @@ Ghi chú được sửa nhẹ lỗi gõ khi đưa vào (vd “Identity property�
 Ngoài 13 câu trên, bạn có thể tự bật/tắt 🧠 Hay quên cho bất kỳ câu nào; lựa chọn đó lưu trong trình duyệt (khóa `claude.study.atlas.forget.v1`) và đi kèm khi Sao lưu / Copy text dữ liệu.
 
 - Bản trên Vercel (commit `1db4a6e`) đã có phần này. **Link artifact vẫn là bản Lần 3** (chưa có nút bỏ đánh dấu ★ hàng loạt và câu hay quên) cho tới khi được cập nhật lại từ repo.
+
+## Lần 5: 20/11/2026, thêm tab "Mẹo thi CCAR-P"
+
+Nguồn: file *CCAR Exam Tips* (bạn tải lên), tổng hợp từ claudecertificationguide.com, Tutorials Dojo, aicertguides.com. Đây là nguồn bên thứ ba, không phải của Anthropic.
+
+- Chỉ lấy phần **CCAR-P**: chiến lược chung, thông tin đề, cách loại đáp án, 7 domain (146 mẹo) và danh sách số liệu cần kiểm tra lại trước khi thi. Phần CCAR-F không đưa vào.
+- Từ khóa tiếng Anh hay xuất hiện trong đề được giữ nguyên và có nghĩa tiếng Việt bên cạnh, ví dụ **least privilege** (quyền tối thiểu).
+- Gắn mẹo với câu hỏi theo domain: D1→AP2, D2→AP6, D3→AP1, D4→AP3, D5→AP4, D6→AP5, D7→AP7. 104/146 mẹo có số câu đi kèm; 113/116 câu CCAR-P có ít nhất một mẹo. Việc gắn này do Claude đối chiếu nội dung đề và đáp án, nên có thể có chỗ chưa khớp.
+- Ở Ôn tập câu hỏi, câu CCAR-P nào có mẹo gắn kèm thì panel Mẹo có thêm mục "Mẹo thi CCAR-P liên quan".
+- Không đổi dữ liệu câu hỏi hay dữ liệu học của bạn.
