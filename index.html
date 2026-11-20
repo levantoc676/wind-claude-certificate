@@ -719,6 +719,15 @@ details.tp-fold .tp-list{margin-top:10px}
  html.side-mini .bank-nav{justify-content:center;padding:8px 0}
  html.side-mini .side-divider{margin-left:12px;margin-right:12px}
 }
+/* Học tủ: 2 chế độ xếp */
+.cr-mode{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border:1px solid var(--stroke2);border-radius:11px;background:var(--surface2);width:100%}
+.cr-mode button{border:0;border-radius:8px;background:transparent;color:var(--muted);font:inherit;font-size:13px;font-weight:700;padding:8px 6px;cursor:pointer}
+.cr-mode button.on{background:var(--accent);color:#06221b}
+.tips-toc-links.cr-letters{flex-direction:row;flex-wrap:wrap}
+.tips-toc-links.cr-letters a{min-width:34px;text-align:center}
+.tips-toc-links.cr-letters a:first-child{width:100%;text-align:left}
+.cr-ap{display:inline-block;font:700 10.5px var(--mono);color:var(--soft);border:1px solid var(--stroke2);border-radius:5px;padding:0 5px;margin-right:4px;vertical-align:2px}
+.cr-keynote{margin:-6px 0 14px}
 </style>
 </head>
 <body>
@@ -2700,19 +2709,26 @@ function crampYesNo(){
 }
 function renderCramp(){
  const doms=TIPS.domains.map(d=>({d,qs:Object.values(CP_BY_N).filter(q=>q.category===d.cat).sort((a,b)=>a.n-b.n)}));
- const toc=`<div class="filters tips-toc"><input class="cr-search" id="crSearch" type="search" placeholder="Tìm key trong đề…" autocomplete="off">
- <div class="tips-toc-links"><a href="#" data-tipgo="cr-yn">Mẹo câu Yes / No</a>${doms.map(({d,qs})=>`<a href="#" data-tipgo="cr-${d.cat}">${d.cat} · ${esc(d.vi)}<small>${qs.length} câu</small></a>`).join('')}</div>
+ const byKey=UI.crMode==='key';
+ const all=doms.flatMap(x=>x.qs).filter(q=>CRAMP[q.n]).sort((a,b)=>CRAMP[a.n].k.localeCompare(CRAMP[b.n].k,'en',{sensitivity:'base',numeric:true})||a.n-b.n);
+ const letter=q=>{const c=CRAMP[q.n].k.trim().charAt(0).toUpperCase();return /[A-Z]/.test(c)?c:'0–9'};
+ const groups=[];for(const q of all){const L=letter(q);let g=groups[groups.length-1];if(!g||g.L!==L)groups.push(g={L,qs:[]});g.qs.push(q)}
+ const modeSw=`<div class="cr-mode" role="group" aria-label="Cách xếp"><button type="button" data-crmode="ap" class="${byKey?'':'on'}">Theo chủ đề AP</button><button type="button" data-crmode="key" class="${byKey?'on':''}">Theo key đề bài</button></div>`;
+ const toc=`<div class="filters tips-toc">${modeSw}<input class="cr-search" id="crSearch" type="search" placeholder="Tìm key trong đề…" autocomplete="off">
+ <div class="tips-toc-links ${byKey?'cr-letters':''}"><a href="#" data-tipgo="cr-yn">Mẹo câu Yes / No</a>${byKey?groups.map(g=>`<a href="#" data-tipgo="cr-L-${g.L}">${g.L}</a>`).join(''):doms.map(({d,qs})=>`<a href="#" data-tipgo="cr-${d.cat}">${d.cat} · ${esc(d.vi)}<small>${qs.length} câu</small></a>`).join('')}</div>
  <label class="checkline"><input type="checkbox" id="crQuiz" ${UI.crQuiz?'checked':''}> Tự kiểm tra: che đáp án</label></div>`;
  const row=q=>{const c=CRAMP[q.n];if(!c)return '';const p=presentP(q.id),st=p.lastCorrect===true?'ok':p.lastCorrect===false?'no':'';
   return `<div class="cr-row" data-s="${esc((c.k+' '+c.a+' '+q.n).toLowerCase())}"><button type="button" class="qchip ${st}" data-action="openQ" data-id="${esc(q.id)}">#${String(q.n).padStart(3,'0')}</button><div class="cr-k">${esc(c.k)}</div><div class="cr-arrow">→</div><div class="cr-a ${UI.crQuiz?'veil':''}">${crampAns(q,c)}</div></div>`};
  const main=`<section class="tips-sec" id="cr-yn"><h2>Mẹo câu Yes / No</h2>${tt(crampYesNo())}</section>`
-  +doms.map(({d,qs})=>`<section class="tips-sec cr-sec" id="cr-${d.cat}"><h2>${d.cat} · ${esc(d.name)} <small>${esc(d.vi)} · ${qs.length} câu</small></h2><div class="cr-table">${qs.map(row).join('')}</div></section>`).join('')
+  +(byKey?`<p class="tiny cr-keynote">Xếp theo chữ cái của key trong đề, không chia theo AP: các câu có key giống nhau (vd “BEFORE running | …”) nằm cạnh nhau.</p>`+groups.map(g=>`<section class="tips-sec cr-sec" id="cr-L-${g.L}"><h2>${g.L} <small>${g.qs.length} câu</small></h2><div class="cr-table">${g.qs.map(row).join('')}</div></section>`).join(''):'')
+  +(byKey?'':doms.map(({d,qs})=>`<section class="tips-sec cr-sec" id="cr-${d.cat}"><h2>${d.cat} · ${esc(d.name)} <small>${esc(d.vi)} · ${qs.length} câu</small></h2><div class="cr-table">${qs.map(row).join('')}</div></section>`).join(''))
   +`<p class="tiny tips-src">Key trong đề: cụm từ chỉ có ở câu đó. Đáp án: chữ đầu của đáp án đúng, hoặc cụm từ chỉ có ở đáp án đúng. Bấm số câu để mở câu trong Ôn tập câu hỏi.</p>`;
  return `<div class="learn-layout tips-layout"><aside class="learn-side">${toc}</aside><div class="learn-main tips-main">${main}</div></div>`;
 }
 {const _rm=renderMain;renderMain=function(){normView();if(UI.view==='cramp'){$('#content').innerHTML=renderCramp();return}_rm()}}
 {const _r=render;render=function(){_r();document.body.classList.toggle('in-tips',UI.view==='tips'||UI.view==='cramp')};}
-document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('.cr-a.veil');if(a)a.classList.remove('veil')});
+document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('.cr-a.veil');if(a)a.classList.remove('veil');
+ const m=e.target.closest&&e.target.closest('[data-crmode]');if(m&&UI.crMode!==m.dataset.crmode){UI.crMode=m.dataset.crmode;save();render();window.scrollTo(0,0)}});
 document.addEventListener('change',e=>{if(e.target&&e.target.id==='crQuiz'){UI.crQuiz=e.target.checked;save();renderContentKeepScroll()}});
 document.addEventListener('input',e=>{if(e.target&&e.target.id==='crSearch'){const v=e.target.value.trim().toLowerCase();
  document.querySelectorAll('.cr-row').forEach(r=>r.style.display=!v||r.dataset.s.includes(v)?'':'none');
