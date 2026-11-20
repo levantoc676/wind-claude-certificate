@@ -572,6 +572,10 @@ body.in-exam .dock{display:none!important}
 html:not([data-skin=game]) .eyebrow,html:not([data-skin=game]) .side-label,html:not([data-skin=game]) .tp-lbl{font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",Arial,sans-serif!important}
 /* hiệu năng */
 .tp-list li{content-visibility:auto;contain-intrinsic-size:auto 60px}
+/* bỏ tiêu đề + mô tả đầu trang, chỉ giữ nút công cụ (nếu có) */
+.viewhead>div:first-child:has(>h1){display:none}
+.viewhead:not(:has(>:nth-child(2))){display:none}
+.viewhead{justify-content:flex-end;margin-bottom:14px}
 </style>
 </head>
 <body>
