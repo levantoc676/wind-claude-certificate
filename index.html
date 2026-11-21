@@ -739,6 +739,10 @@ details.tp-fold .tp-list{margin-top:10px}
 .shuffle-btn{margin-top:8px;width:100%;justify-content:center}
 .shuffle-btn.on{border-color:var(--accent);color:var(--accent)}
 .cr-note{color:var(--red);font-weight:700}
+.cr-exp-row{display:grid;grid-template-columns:minmax(150px,1fr) minmax(0,3fr);gap:12px;padding:12px 14px;font-size:15px;line-height:1.6}
+.cr-exp-list{margin:6px 0 0;padding-left:18px}.cr-exp-list li{margin-bottom:6px}
+.cr-good-t{color:var(--green)}
+@media(max-width:760px){.cr-exp-row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -2756,11 +2760,16 @@ function renderCrampSure(){
  return `<section class="tips-sec" id="cr-s-good"><h2>✅ Chữ đầu của đáp án: 100% đúng <small>Chưa lần nào đứng đầu một đáp án sai trong ${Object.keys(CP_BY_N).length} câu CCAR-P (xuất hiện ≥ 2 câu)</small></h2>${tbl(good,'cr-good')}</section>
  <section class="tips-sec" id="cr-s-phr"><h2>✅ Cụm từ nằm trong đáp án: 100% đúng <small>Xuất hiện ở bất kỳ vị trí nào trong đáp án, chưa lần nào ở đáp án sai</small></h2>${tbl(phr,'cr-good')}<p class="tiny" style="margin-top:8px">MCP viết đầy đủ “Model Context Protocol (MCP)” chỉ có ở đáp án đúng; đáp án sai thường chỉ viết tắt “MCP”.</p></section>
  <section class="tips-sec" id="cr-s-bad"><h2>❌ Chữ đầu của đáp án: chưa lần nào đúng <small>Thấy đáp án mở đầu bằng các chữ này thì loại trước (xuất hiện ≥ 3 câu)</small></h2>${tbl(bad,'cr-bad')}</section>
+ <section class="tips-sec" id="cr-s-exp"><h2>💡 Kinh nghiệm <small>Mẹo rút ra khi ôn, ghi thêm dần</small></h2>
+ <div class="cr-table cr-exp">
+  <div class="cr-exp-row"><div class="cr-k">BEFORE running</div><div>Ngoài <b>Define</b>, chọn đáp án có chữ đầu bắt đầu bằng <b class="cr-good-t">C</b> hoặc <b class="cr-good-t">D</b>.
+   <ul class="cr-exp-list"><li>${chips([CP_BY_N[45]])} Choose + Define</li><li>${chips([CP_BY_N[104]])} Curate + Define</li><li>${chips([CP_BY_N[2]])} Determine + Define <span class="cr-note">(câu này còn Decide và Document cũng chữ D nhưng là đáp án sai → nhớ Determine)</span></li></ul></div></div>
+ </div></section>
  <p class="tiny tips-src">Thống kê tự động từ đáp án của bộ CCAR-P trên web (bỏ qua câu Yes/No và câu xếp thứ tự). Đây là quy luật của bộ đề này, không bảo đảm đúng với đề thi thật; dùng để loại nhanh khi phân vân.</p>`;
 }
 {const _rc=renderCramp;renderCramp=function(){const h=_rc();if(UI.crMode!=='sure')return h;
  const a=h.indexOf('<div class="learn-main tips-main">')+'<div class="learn-main tips-main">'.length,b=h.lastIndexOf('</div></div>');
- let side=h.slice(0,a);side=side.replace(/<div class="tips-toc-links[^"]*">[\s\S]*?<\/div>/,`<div class="tips-toc-links"><a href="#" data-tipgo="cr-s-good">✅ Chữ đầu 100% đúng</a><a href="#" data-tipgo="cr-s-phr">✅ Cụm từ 100% đúng</a><a href="#" data-tipgo="cr-s-bad">❌ Chữ đầu chưa lần nào đúng</a></div>`).replace(/<input class="cr-search"[^>]*>/,'').replace(/<label class="checkline"><input type="checkbox" id="crQuiz"[\s\S]*?<\/label>/,'');
+ let side=h.slice(0,a);side=side.replace(/<div class="tips-toc-links[^"]*">[\s\S]*?<\/div>/,`<div class="tips-toc-links"><a href="#" data-tipgo="cr-s-good">✅ Chữ đầu 100% đúng</a><a href="#" data-tipgo="cr-s-phr">✅ Cụm từ 100% đúng</a><a href="#" data-tipgo="cr-s-bad">❌ Chữ đầu chưa lần nào đúng</a><a href="#" data-tipgo="cr-s-exp">💡 Kinh nghiệm</a></div>`).replace(/<input class="cr-search"[^>]*>/,'').replace(/<label class="checkline"><input type="checkbox" id="crQuiz"[\s\S]*?<\/label>/,'');
  return side+renderCrampSure()+h.slice(b)}}
 {const _rm=renderMain;renderMain=function(){normView();if(UI.view==='cramp'){$('#content').innerHTML=renderCramp();return}_rm()}}
 {const _r=render;render=function(){_r();document.body.classList.toggle('in-tips',UI.view==='tips'||UI.view==='cramp')};}
