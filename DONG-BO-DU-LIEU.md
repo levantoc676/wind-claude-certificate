@@ -152,3 +152,9 @@ Mã chủ đề AP của bộ CCAR-P (AP = **A**rchitect **P**rofessional) trư�
   - Mã phương án (A–D) và đáp án đúng, nên tiến độ học không bị ảnh hưởng.
   - Dữ liệu gốc: bỏ chế độ Ngẫu nhiên thì đề về như cũ.
 - **Câu không đảo được:** #036 không đánh số nhận định trong đề (chỉ ghi "five tools in total"), nên không đảo.
+
+## Lần 10: 21/11/2026, đảo thứ tự cả câu ghép mục; sửa học tủ #066
+
+- **Câu ghép mục (6 mục → 3 nhóm):** áp dụng cách đảo của Lần 9 cho #022 (chunking) và #112 (token-management). Khi đảo thì đổi theo cả thứ tự 6 mục trong đề (EN/VI), các phương án và đáp án Học tủ (vd "Code – Code – Short – Long – Short – Long").
+- **#032 (pipeline hóa đơn) không đảo được:** đề không có danh sách 6 thành phần ("the specific list is not available").
+- **Học tủ #066:** fixed steps → Câu chứa "steps". Chỉ đáp án đúng có chữ "steps" (số nhiều); đáp án A và C chỉ có "step".
