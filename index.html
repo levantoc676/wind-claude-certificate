@@ -743,6 +743,14 @@ details.tp-fold .tp-list{margin-top:10px}
 .cr-exp-list{margin:6px 0 0;padding-left:18px}.cr-exp-list li{margin-bottom:6px}
 .cr-good-t{color:var(--green)}
 @media(max-width:760px){.cr-exp-row{grid-template-columns:1fr}}
+/* Thi thử: chọn nhiều chủ đề */
+.ex-topics{border:1px solid var(--stroke);border-radius:12px;padding:12px 14px;margin:14px 0;background:var(--surface)}
+.ex-topics-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.ex-topics-head .sp{flex:1}
+.ex-topics-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px}
+.ex-topic{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--stroke2);border-radius:9px;cursor:pointer;font-size:14px}
+.ex-topic small{margin-left:auto;font-family:var(--mono);color:var(--soft)}
+.ex-topic.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
 </style>
 </head>
 <body>
@@ -2904,6 +2912,23 @@ let ROUTE_SYNC=false;
  document.title=(ROUTE_TITLE[UI.view]||'')+' · Wind Claude Certificate'}}
 const onRoute=()=>{const v=viewFromHash();if(v&&v!==UI.view){ROUTE_SYNC=true;try{UI.view=v;UI.mobile=false;save();render();window.scrollTo({top:0,behavior:'instant'})}finally{ROUTE_SYNC=false}document.title=(ROUTE_TITLE[v]||'')+' · Wind Claude Certificate'}};
 window.addEventListener('popstate',onRoute);window.addEventListener('hashchange',onRoute);
+</script>
+<script>
+/* ===== Thi thử: chọn nhiều chủ đề ===== */
+function examTopicSel(){const ok=new Set(possibleCategories().map(c=>c.id));return (Array.isArray(UI.examTopics)?UI.examTopics:[]).filter(id=>ok.has(id))}
+{const _ec=examCandidates;examCandidates=function(){const sel=examTopicSel();if(!sel.length)return _ec();
+ const t=UI.topic;UI.topic='all';let out;try{out=_ec()}finally{UI.topic=t}const S=new Set(sel);return out.filter(q=>S.has(categoryOf(q)))}}
+function examTopicsHTML(){
+ const cats=possibleCategories(),sel=new Set(examTopicSel());if(cats.length<2)return '';
+ const all=cats.length&&cats.every(c=>sel.has(c.id));
+ return `<div class="ex-topics"><div class="ex-topics-head"><b>Chủ đề trong đề thi</b><span class="tiny">${sel.size?`Đã chọn ${sel.size}/${cats.length} chủ đề · ô “Chủ đề” ở bộ lọc tạm bỏ qua`:'Chưa chọn: dùng theo ô “Chủ đề” ở bộ lọc'}</span><span class="sp"></span><button type="button" class="btn mini" data-action="exTopicsAll">${all?'Bỏ chọn tất cả':'Chọn tất cả'}</button></div>
+ <div class="ex-topics-list">${cats.map(c=>`<label class="ex-topic ${sel.has(c.id)?'on':''}"><input type="checkbox" data-extopic="${esc(c.id)}" ${sel.has(c.id)?'checked':''}><span>${esc(UI.bank==='ALL'?c.bank+' · '+c.title:c.title)}</span><small>${c.count}</small></label>`).join('')}</div></div>`;
+}
+{const _re=renderExam;renderExam=function(){const h=_re();if(EXAM)return h;const k=h.indexOf('<div class="infostrip');return k<0?h:h.slice(0,k)+examTopicsHTML()+h.slice(k)}}
+document.addEventListener('change',e=>{const t=e.target;if(!t||!t.dataset||t.dataset.extopic===undefined)return;
+ const s=new Set(examTopicSel());t.checked?s.add(t.dataset.extopic):s.delete(t.dataset.extopic);UI.examTopics=[...s];save();renderContentKeepScroll()});
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-action=exTopicsAll]');if(!b)return;e.preventDefault();e.stopPropagation();
+ const cats=possibleCategories(),sel=new Set(examTopicSel());UI.examTopics=cats.every(c=>sel.has(c.id))?[]:cats.map(c=>c.id);save();renderContentKeepScroll()},true);
 </script>
 </body>
 </html>
