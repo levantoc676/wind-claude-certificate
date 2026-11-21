@@ -137,3 +137,18 @@ Mã chủ đề AP của bộ CCAR-P (AP = **A**rchitect **P**rofessional) trư�
 - Tiến độ học, sổ câu sai, ★, hay quên… của câu bị bỏ được tự chuyển sang câu giữ lại (một lần, khi mở web). Nếu câu giữ lại đã có dữ liệu riêng thì giữ dữ liệu đó.
 - Tab Mẹo thi và Học tủ CCAR-P cũng bỏ 3 câu CCAR-P trùng (Học tủ còn 113 dòng).
 - Mã dữ liệu cũ (WCC1:…) tạo trước lần này vẫn nhập được; câu bị bỏ trong mã đó sẽ được bỏ qua.
+
+## Lần 9: 21/11/2026, đảo thứ tự nhận định ở câu Yes/No
+
+- Áp dụng cho 5 câu CCAR-P có nhận định đánh số: #017, #020, #023, #037, #049.
+- **Khi nào đảo:** khi chọn *Sắp xếp: Ngẫu nhiên* ở Ôn tập câu hỏi / Flashcards (mỗi lần chọn lại là một thứ tự mới), và trong mỗi lượt Thi thử.
+- **Những gì đổi theo:**
+  - Thứ tự (1)…(n) trong đề, cả tiếng Anh lẫn tiếng Việt.
+  - Số trong phần ghi chú của đề, ví dụ "claims 4 and 5".
+  - Chuỗi Yes/No của mọi phương án.
+  - Key và đáp án Học tủ.
+  - Phần giải thích có thêm dòng cho biết thứ tự mới ứng với thứ tự gốc.
+- **Những gì giữ nguyên:**
+  - Mã phương án (A–D) và đáp án đúng, nên tiến độ học không bị ảnh hưởng.
+  - Dữ liệu gốc: bỏ chế độ Ngẫu nhiên thì đề về như cũ.
+- **Câu không đảo được:** #036 không đánh số nhận định trong đề (chỉ ghi "five tools in total"), nên không đảo.

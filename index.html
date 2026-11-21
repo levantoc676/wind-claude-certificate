@@ -2778,5 +2778,61 @@ function applySideMini(on){document.documentElement.classList.toggle('side-mini'
 applySideMini(safeLs.get(SIDE_KEY)==='1');
 document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#sideToggle')){e.preventDefault();e.stopPropagation();const on=!document.documentElement.classList.contains('side-mini');try{safeLs.set(SIDE_KEY,on?'1':'0')}catch{}applySideMini(on)}},true);
 </script>
+<script>
+/* ===== Câu Yes/No nhiều nhận định: đảo thứ tự (1)…(n) khi "Sắp xếp: Ngẫu nhiên" hoặc khi thi thử =====
+   Đổi chỗ các nhận định trong đề (EN/VI), đổi số ở phần ghi chú (vd "claims 4 and 5"),
+   đổi chuỗi Yes/No của mọi phương án theo cùng hoán vị; mã phương án (A–D) và đáp án đúng giữ nguyên,
+   nên tiến độ học không bị ảnh hưởng. Học tủ (key + đáp án) cập nhật theo. */
+const YN={list:[],seed:null};
+(function(){
+ for(const q of Q){
+  const ts=q.options.map(o=>String(o.t.en||'').trim());
+  if(!ts.every(t=>/^(Yes|No)(\s*-\s*(Yes|No))+$/.test(t)))continue;
+  if(!/\(1\)/.test(q.stem.en||''))continue; /* đề không đánh số nhận định thì không đảo được */
+  YN.list.push({q,N:ts[0].split('-').length,stem:{...q.stem},opts:q.options.map(o=>({...o.t})),ex:q.explain&&q.explain.text,ck:null});
+ }
+})();
+function ynParse(t){
+ const ms=[...String(t).matchAll(/\((\d)\)\s*/g)];if(!ms.length)return null;
+ const pre=t.slice(0,ms[0].index),items=[];
+ for(let i=0;i<ms.length;i++){const a=ms[i].index+ms[i][0].length,b=i+1<ms.length?ms[i+1].index:t.length;items.push({n:+ms[i][1],raw:t.slice(a,b)})}
+ let last=items[items.length-1].raw,note='',tail='';
+ const mc=last.match(/\)\s*$/);if(mc){tail=last.slice(mc.index);last=last.slice(0,mc.index)}
+ const semi=last.lastIndexOf(';');if(semi>=0&&/\d/.test(last.slice(semi))){note=last.slice(semi+1).trim();last=last.slice(0,semi)}
+ items[items.length-1].raw=last;
+ const semiStyle=items.length>1&&/;\s*$/.test(items[0].raw);
+ items.forEach(x=>x.txt=x.raw.replace(/[;\s]+$/,'').trim());
+ return {pre,items,note,tail,semiStyle};
+}
+const ynNums=(t,np)=>String(t).replace(/(^|[^\d(])([1-9])(?![\d)])/g,(m,a,d)=>a+(np[+d]||d)).replace(/(\d+)(\s+(?:and|và)\s+)(\d+)/g,(m,x,c,y)=>+x>+y?y+c+x:m);
+function ynStem(t,np){
+ const P=ynParse(t);if(!P)return t;
+ const body=P.items.slice().sort((a,b)=>np[a.n]-np[b.n]).map(x=>`(${np[x.n]}) ${x.txt}`).join(P.semiStyle?'; ':' ');
+ const note=P.note?ynNums(P.note,np):'';
+ return P.pre+body+(note?(P.semiStyle?'; ':' ')+note:'')+P.tail;
+}
+function ynPat(t,np){const a=String(t).split(/\s*-\s*/),o=new Array(a.length);a.forEach((v,i)=>o[np[i+1]-1]=v);return o.join(' - ')}
+function ynRand(str){let h=2166136261;for(let i=0;i<str.length;i++)h=Math.imul(h^str.charCodeAt(i),16777619);return()=>{h^=h<<13;h^=h>>>17;h^=h<<5;return((h>>>0)%1e6)/1e6}}
+function ynApply(){
+ const seed=(UI.view==='exam'&&typeof EXAM!=='undefined'&&EXAM&&EXAM.started)?'ex'+EXAM.started:(UI.sort==='random'?'r'+(UI.randomSeed||0):null);
+ if(seed===YN.seed)return;YN.seed=seed;
+ for(const x of YN.list){
+  const q=x.q,c=typeof CRAMP!=='undefined'?CRAMP[q.n]:null;
+  if(c&&q.bank==='CCAR-P'&&!x.ck)x.ck={k:c.k,a:c.a};
+  q.stem={...x.stem};q.options.forEach((o,i)=>o.t={...x.opts[i]});if(q.explain&&x.ex!=null)q.explain.text=x.ex;
+  if(c&&x.ck&&q.bank==='CCAR-P'){c.k=x.ck.k;c.a=x.ck.a}
+  x.np=null;if(!seed)continue;
+  const R=ynRand(seed+'|'+q.id);let arr;
+  do{arr=[...Array(x.N).keys()].map(i=>i+1);for(let i=arr.length-1;i>0;i--){const j=Math.floor(R()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}}while(arr.every((v,i)=>v===i+1)||(x.known||(x.known=ynParse(x.stem.en).items.map(t=>t.n))).every(k=>arr[k-1]===k));
+  const np={};arr.forEach((oldN,newIdx)=>np[oldN]=newIdx+1);x.np=np;
+  for(const L of Object.keys(q.stem))if(L!=='jp')q.stem[L]=ynStem(x.stem[L],np);
+  q.options.forEach((o,i)=>{for(const L of Object.keys(o.t))o.t[L]=ynPat(x.opts[i][L],np)});
+  if(q.explain&&x.ex!=null){const map=Object.keys(np).sort((a,b)=>np[a]-np[b]).map(o=>`(${np[o]}) = gốc (${o})`).join(', ');
+   q.explain.text=`🔀 <b>Thứ tự nhận định đã đảo:</b> ${map}. Giải thích bên dưới viết theo thứ tự gốc.<br><br>`+x.ex}
+  if(c&&x.ck){c.a=q.options.find(o=>o.k===q.answer[0]).t.en.replace(/\s*-\s*/g,'-');c.k=/claim/i.test(x.ck.k)?ynNums(x.ck.k,np):x.ck.k}
+ }
+}
+{const _r=render;render=function(){try{ynApply()}catch(e){console.error(e)}_r()}}
+</script>
 </body>
 </html>
