@@ -158,3 +158,15 @@ Mã chủ đề AP của bộ CCAR-P (AP = **A**rchitect **P**rofessional) trư�
 - **Câu ghép mục (6 mục → 3 nhóm):** áp dụng cách đảo của Lần 9 cho #022 (chunking) và #112 (token-management). Khi đảo thì đổi theo cả thứ tự 6 mục trong đề (EN/VI), các phương án và đáp án Học tủ (vd "Code – Code – Short – Long – Short – Long").
 - **#032 (pipeline hóa đơn) không đảo được:** đề không có danh sách 6 thành phần ("the specific list is not available").
 - **Học tủ #066:** fixed steps → Câu chứa "steps". Chỉ đáp án đúng có chữ "steps" (số nhiều); đáp án A và C chỉ có "step".
+
+## Lần 11: 21/11/2026, chế độ Ngẫu nhiên trộn cả phương án; nút 🔀 Ngẫu nhiên
+
+- Khi chọn **Sắp xếp: Ngẫu nhiên** hoặc bấm nút **🔀 Ngẫu nhiên** mới thêm trong bộ lọc, mỗi lần bấm là một lần trộn mới. Áp dụng cho cả 489 câu ở Ôn tập câu hỏi và Flashcards.
+- **Những gì đổi:**
+  - Thứ tự câu hỏi.
+  - Thứ tự phương án của mọi câu. Chữ cái A, B, C… được gán lại theo vị trí mới.
+  - Câu Yes/No và câu ghép mục (#017, #020, #022, #023, #037, #049, #112): thêm đảo thứ tự (1)…(n) trong đề, như ở Lần 9–10.
+- **Những gì đổi theo:** dòng "Đáp án đúng", phần giải thích (vd "<b>C.</b> …", "(trong đáp án C)"), Dịch ngắn gọn, phím tắt A–E và Copy câu hỏi đều theo chữ cái mới.
+- **Những gì giữ nguyên:**
+  - Tiến độ và lịch sử chọn vẫn lưu theo mã gốc, nên bỏ chế độ Ngẫu nhiên là mọi thứ về như cũ.
+  - Thi thử giữ cách trộn phương án riêng của phòng thi, chỉ đảo thêm thứ tự (1)…(n).

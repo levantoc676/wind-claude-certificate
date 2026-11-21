@@ -735,6 +735,9 @@ details.tp-fold .tp-list{margin-top:10px}
 .cr-k.cr-bad{color:var(--red);text-decoration:line-through;text-decoration-thickness:1px}
 .cr-cnt{font:700 12.5px var(--mono);color:var(--soft)}
 @media(max-width:760px){.cr-sure-row{grid-template-columns:1fr auto!important}.cr-sure-row .tip-q{grid-column:1/-1}}
+/* Nút trộn ngẫu nhiên trong bộ lọc */
+.shuffle-btn{margin-top:8px;width:100%;justify-content:center}
+.shuffle-btn.on{border-color:var(--accent);color:var(--accent)}
 </style>
 </head>
 <body>
@@ -2779,18 +2782,21 @@ applySideMini(safeLs.get(SIDE_KEY)==='1');
 document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#sideToggle')){e.preventDefault();e.stopPropagation();const on=!document.documentElement.classList.contains('side-mini');try{safeLs.set(SIDE_KEY,on?'1':'0')}catch{}applySideMini(on)}},true);
 </script>
 <script>
-/* ===== Câu Yes/No nhiều nhận định: đảo thứ tự (1)…(n) khi "Sắp xếp: Ngẫu nhiên" hoặc khi thi thử =====
-   Đổi chỗ các nhận định trong đề (EN/VI), đổi số ở phần ghi chú (vd "claims 4 and 5"),
-   đổi chuỗi Yes/No của mọi phương án theo cùng hoán vị; mã phương án (A–D) và đáp án đúng giữ nguyên,
-   nên tiến độ học không bị ảnh hưởng. Học tủ (key + đáp án) cập nhật theo. */
-const YN={list:[],seed:null};
+/* ===== Sắp xếp ngẫu nhiên: trộn phương án (A–E) của mọi câu + đảo thứ tự mục trong câu Yes/No và câu ghép =====
+   - "Sắp xếp: Ngẫu nhiên" (hoặc nút 🔀 Ngẫu nhiên): mỗi câu có thứ tự phương án mới, chữ cái A, B, C… gán lại theo vị trí;
+     câu Yes/No / ghép mục còn đảo thứ tự (1)…(n) trong đề.
+   - Thi thử: phương án do phòng thi tự trộn; ở đây chỉ đảo thứ tự (1)…(n).
+   - Tiến độ, lịch sử chọn được lưu theo mã gốc nên không bị lệch; bỏ chế độ Ngẫu nhiên là về như cũ. */
+const SH={seed:null,yn:[],orig:new Map(),inv:{}};
+const YN={get list(){return SH.yn},get seed(){return SH.seed}};
 (function(){
  for(const q of Q){
+  SH.orig.set(q.id,{opts:q.options.slice(),answer:q.answer.slice(),stem:{...q.stem},ex:q.explain?{text:q.explain.text,key:q.explain.key,elim:q.explain.elim?q.explain.elim.slice():q.explain.elim}:null});
+  q.options.forEach(o=>{o._k=o.k;o._t={...o.t}});
   const ts=q.options.map(o=>String(o.t.en||'').trim());
   const yn=ts.every(t=>/^(Yes|No)(\s*-\s*(Yes|No))+$/.test(t)),mt=!yn&&ts.every(t=>t.includes(' · ')&&t.split(' · ').length===ts[0].split(' · ').length);
-  if(!yn&&!mt)continue;
-  if(!/\(1\)/.test(q.stem.en||''))continue; /* đề không đánh số các mục thì không đảo được */
-  YN.list.push({q,yn,N:yn?ts[0].split('-').length:ts[0].split(' · ').length,stem:{...q.stem},opts:q.options.map(o=>({...o.t})),ex:q.explain&&q.explain.text,ck:null});
+  if((!yn&&!mt)||!/\(1\)/.test(q.stem.en||''))continue; /* đề không đánh số các mục thì không đảo được */
+  SH.yn.push({q,yn,N:yn?ts[0].split('-').length:ts[0].split(' · ').length,stem:{...q.stem},ck:null});
  }
 })();
 function ynParse(t){
@@ -2815,27 +2821,57 @@ function ynStem(t,np){
 }
 function ynPat(t,np,yn=true){const a=String(t).split(yn?/\s*-\s*/:/\s*·\s*/),o=new Array(a.length);a.forEach((v,i)=>o[np[i+1]-1]=v);return o.join(yn?' - ':' · ')}
 function ynRand(str){let h=2166136261;for(let i=0;i<str.length;i++)h=Math.imul(h^str.charCodeAt(i),16777619);return()=>{h^=h<<13;h^=h>>>17;h^=h<<5;return((h>>>0)%1e6)/1e6}}
-function ynApply(){
- const seed=(UI.view==='exam'&&typeof EXAM!=='undefined'&&EXAM&&EXAM.started)?'ex'+EXAM.started:(UI.sort==='random'?'r'+(UI.randomSeed||0):null);
- if(seed===YN.seed)return;YN.seed=seed;
- for(const x of YN.list){
+function shRestore(){
+ for(const q of Q){const O=SH.orig.get(q.id);q.options=O.opts.slice();q.options.forEach(o=>{o.k=o._k;o.t={...o._t}});q.answer=O.answer.slice();q.stem={...O.stem};
+  if(O.ex&&q.explain){q.explain.text=O.ex.text;q.explain.key=O.ex.key;q.explain.elim=O.ex.elim?O.ex.elim.slice():O.ex.elim}}
+ for(const x of SH.yn){const c=typeof CRAMP!=='undefined'?CRAMP[x.q.n]:null;if(c&&x.ck){c.k=x.ck.k;c.a=x.ck.a}x.np=null}
+ SH.inv={};
+}
+function shApply(){
+ const inExam=UI.view==='exam'&&typeof EXAM!=='undefined'&&EXAM&&EXAM.started;
+ const rnd=UI.sort==='random'?'r'+(UI.randomSeed||0):null;
+ const seedYN=inExam?'ex'+EXAM.started:rnd,seedOpt=inExam?null:rnd;
+ const key=seedYN+'|'+seedOpt;if(key===SH.seed)return;SH.seed=key;
+ shRestore();
+ if(typeof LR!=='undefined')for(const k of Object.keys(LR))delete LR[k];
+ if(typeof DRAFTS!=='undefined'){DRAFTS={};REVEALED={}}
+ /* 1) đảo thứ tự mục (1)…(n) */
+ if(seedYN)for(const x of SH.yn){
   const q=x.q,c=typeof CRAMP!=='undefined'?CRAMP[q.n]:null;
   if(c&&q.bank==='CCAR-P'&&!x.ck)x.ck={k:c.k,a:c.a};
-  q.stem={...x.stem};q.options.forEach((o,i)=>o.t={...x.opts[i]});if(q.explain&&x.ex!=null)q.explain.text=x.ex;
-  if(c&&x.ck&&q.bank==='CCAR-P'){c.k=x.ck.k;c.a=x.ck.a}
-  x.np=null;if(!seed)continue;
-  const R=ynRand(seed+'|'+q.id);let arr;
+  const R=ynRand(seedYN+'|'+q.id);let arr;
   do{arr=[...Array(x.N).keys()].map(i=>i+1);for(let i=arr.length-1;i>0;i--){const j=Math.floor(R()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}}while(arr.every((v,i)=>v===i+1)||(x.known||(x.known=ynParse(x.stem.en).items.map(t=>t.n))).every(k=>arr[k-1]===k));
   const np={};arr.forEach((oldN,newIdx)=>np[oldN]=newIdx+1);x.np=np;
   for(const L of Object.keys(q.stem))if(L!=='jp')q.stem[L]=ynStem(x.stem[L],np);
-  q.options.forEach((o,i)=>{for(const L of Object.keys(o.t))o.t[L]=ynPat(x.opts[i][L],np,x.yn)});
-  if(q.explain&&x.ex!=null){const map=Object.keys(np).sort((a,b)=>np[a]-np[b]).map(o=>`(${np[o]}) = gốc (${o})`).join(', ');
-   q.explain.text=`🔀 <b>Thứ tự ${x.yn?'nhận định':'các mục'} đã đảo:</b> ${map}. Giải thích bên dưới viết theo thứ tự gốc.<br><br>`+x.ex}
-  if(c&&x.ck){if(x.yn){/* đáp án học tủ Yes/No ghi theo nội dung nên không đổi khi đảo */}
-   else{const sep=(x.ck.a.match(/\s[–·]\s/)||[' · '])[0],pa=x.ck.a.split(/\s*[–·]\s*/);if(pa.length===x.N){const o=new Array(x.N);pa.forEach((v,i)=>o[np[i+1]-1]=v);c.a=o.join(sep)}}c.k=/claim/i.test(x.ck.k)?ynNums(x.ck.k,np):x.ck.k}
+  q.options.forEach(o=>{for(const L of Object.keys(o.t))o.t[L]=ynPat(o._t[L],np,x.yn)});
+  const O=SH.orig.get(q.id);
+  if(q.explain&&O.ex&&O.ex.text!=null){const map=Object.keys(np).sort((a,b)=>np[a]-np[b]).map(o=>`(${np[o]}) = gốc (${o})`).join(', ');
+   q.explain.text=`🔀 <b>Thứ tự ${x.yn?'nhận định':'các mục'} đã đảo:</b> ${map}. Giải thích bên dưới viết theo thứ tự gốc.<br><br>`+O.ex.text}
+  if(c&&x.ck){if(!x.yn){const sep=(x.ck.a.match(/\s[–·]\s/)||[' · '])[0],pa=x.ck.a.split(/\s*[–·]\s*/);if(pa.length===x.N){const o=new Array(x.N);pa.forEach((v,i)=>o[np[i+1]-1]=v);c.a=o.join(sep)}}
+   c.k=/claim/i.test(x.ck.k)?ynNums(x.ck.k,np):x.ck.k}
+ }
+ /* 2) trộn phương án, gán lại chữ cái theo vị trí */
+ if(seedOpt)for(const q of Q){
+  const O=SH.orig.get(q.id),n=O.opts.length;if(n<2)continue;
+  const R=ynRand(seedOpt+'#'+q.id);let arr;
+  do{arr=[...Array(n).keys()];for(let i=n-1;i>0;i--){const j=Math.floor(R()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}}while(arr.every((v,i)=>v===i));
+  const M={},ordered=arr.map(i=>O.opts[i]);ordered.forEach((o,i)=>{const nk='ABCDEFGH'[i];M[o._k]=nk;o.k=nk});
+  q.options=ordered;q.answer=O.answer.map(k=>M[k]).sort();
+  const inv={};for(const k in M)inv[M[k]]=k;SH.inv[q.id]=inv;
+  const rl=t=>t==null?t:String(t).replace(/\(trong đáp án ([A-H])\)/g,(m,k)=>'(trong đáp án '+(M[k]||k)+')').replace(/<b>([A-H])(<\/b>|\. )/g,(m,k,t2)=>'<b>'+(M[k]||k)+t2);
+  if(q.explain){q.explain.text=rl(q.explain.text);q.explain.key=rl(q.explain.key);
+   if(Array.isArray(q.explain.elim)){const lt=x=>(String(x).match(/^<b>([A-H])/)||[])[1]||'Z';q.explain.elim=q.explain.elim.map(rl).sort((a,b)=>lt(a).localeCompare(lt(b)))}}
  }
 }
-{const _r=render;render=function(){try{ynApply()}catch(e){console.error(e)}_r()}}
+/* lịch sử chọn lưu theo mã gốc */
+{const _rp=recordPick;recordPick=function(id,keys,...r){const inv=SH.inv[id];return _rp(id,inv&&keys?keys.map(k=>inv[k]||k):keys,...r)}}
+{const _r=render;render=function(){try{shApply()}catch(e){console.error(e)}_r()}}
+function ynApply(){shApply()}
+/* Bộ lọc: nút 🔀 Ngẫu nhiên — mỗi lần bấm là một thứ tự câu + phương án mới */
+{const _fb=filterBar;filterBar=function(){const h=_fb();const btn=`<button type="button" class="btn mini shuffle-btn ${UI.sort==='random'?'on':''}" data-action="reshuffle" title="Trộn lại thứ tự câu hỏi, phương án và các mục trong đề">🔀 Ngẫu nhiên${UI.sort==='random'?' · trộn lại':''}</button>`;
+ const k=h.indexOf('<label for="poolSort">');if(k<0)return h+btn;const e=h.indexOf('</select>',k)+'</select>'.length;return h.slice(0,e)+btn+h.slice(e)}}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-action=reshuffle]');if(!b)return;e.preventDefault();e.stopPropagation();
+ UI.sort='random';UI.randomSeed=Math.floor(Math.random()*2**30);UI.page=1;UI.flashIndex=0;UI.learnId=null;save();render();window.scrollTo({top:0,behavior:'instant'})},true);
 </script>
 </body>
 </html>
