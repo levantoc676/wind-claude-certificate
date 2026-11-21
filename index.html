@@ -2889,5 +2889,18 @@ function ynApply(){shApply()}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-action=reshuffle]');if(!b)return;e.preventDefault();e.stopPropagation();
  UI.sort='random';UI.randomSeed=Math.floor(Math.random()*2**30);UI.page=1;UI.flashIndex=0;UI.learnId=null;save();render();window.scrollTo({top:0,behavior:'instant'})},true);
 </script>
+<script>
+/* ===== Mỗi tab một đường dẫn riêng: #/on-tap, #/thi-thu, #/hoc-tu… (bấm Back/Forward của trình duyệt cũng chuyển tab) ===== */
+const ROUTES={learn:'on-tap',tips:'meo-thi',cramp:'hoc-tu',flash:'flashcards',vocab:'hoc-tu-moi',exam:'thi-thu',stats:'thong-ke'};
+const ROUTE_TITLE={learn:'Ôn tập câu hỏi',tips:'Mẹo thi CCAR-P',cramp:'Học tủ CCAR-P',flash:'Flashcards',vocab:'Học từ mới',exam:'Thi thử',stats:'Thống kê'};
+const viewFromHash=()=>{const h=decodeURIComponent(location.hash.replace(/^#\/?/,'')).split(/[/?]/)[0];return Object.keys(ROUTES).find(v=>ROUTES[v]===h)||null};
+let ROUTE_SYNC=false;
+(function(){const v=viewFromHash();if(v&&v!==UI.view){UI.view=v;try{save()}catch(e){}}})();
+{const _r=render;render=function(){_r();if(ROUTE_SYNC)return;const slug=ROUTES[UI.view];if(!slug)return;const want='#/'+slug;
+ if(location.hash!==want){try{history[location.hash?'pushState':'replaceState'](null,'',want)}catch(e){location.hash=want}}
+ document.title=(ROUTE_TITLE[UI.view]||'')+' · Wind Claude Certificate'}}
+const onRoute=()=>{const v=viewFromHash();if(v&&v!==UI.view){ROUTE_SYNC=true;try{UI.view=v;UI.mobile=false;save();render();window.scrollTo({top:0,behavior:'instant'})}finally{ROUTE_SYNC=false}document.title=(ROUTE_TITLE[v]||'')+' · Wind Claude Certificate'}};
+window.addEventListener('popstate',onRoute);window.addEventListener('hashchange',onRoute);
+</script>
 </body>
 </html>
