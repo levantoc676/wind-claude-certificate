@@ -738,6 +738,7 @@ details.tp-fold .tp-list{margin-top:10px}
 /* Nút trộn ngẫu nhiên trong bộ lọc */
 .shuffle-btn{margin-top:8px;width:100%;justify-content:center}
 .shuffle-btn.on{border-color:var(--accent);color:var(--accent)}
+.cr-note{color:var(--red);font-weight:700}
 </style>
 </head>
 <body>
@@ -2706,7 +2707,7 @@ try{if(!localStorage.getItem('claude.study.atlas.apnum.v1')){const M={AP2:'AP1',
 /* ===== Tab Học tủ CCAR-P: key trong đề → key đáp án ===== */
 const CRAMP=JSON.parse(document.getElementById('wcc-cramp').textContent);
 const CRAMP_BY_ID={};for(const n in CRAMP){const q=CP_BY_N[n];if(q)CRAMP_BY_ID[q.id]=CRAMP[n]}
-function crampAns(q,c){return (q.multi?`<span class="cr-multi">[Chọn ${q.answer.length}]</span> `:'')+esc(c.a)}
+function crampAns(q,c){return (q.multi?`<span class="cr-multi">[Chọn ${q.answer.length}]</span> `:'')+esc(c.a).replace(/\(([^()]*[À-ỹ][^()]*)\)/g,'<span class="cr-note">($1)</span>')}
 function crampYesNo(){
  const cps=Object.values(CP_BY_N);const pat={};
  for(const q of cps){const t=String(q.options.find(o=>o.k===q.answer[0]).t.en||'').trim();if(/^(Yes|No)\s*-/.test(t)){const k=t.replace(/\s*-\s*/g,'-');(pat[k]=pat[k]||[]).push(q)}}
