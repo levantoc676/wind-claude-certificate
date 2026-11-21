@@ -1160,8 +1160,11 @@ function mineText(q){
  if(EXAM&&!EXAM.done&&(EXAM.answers[q.id]||[]).length)return `${EXAM.answers[q.id].join(', ')} (đang thi, chưa nộp)`;
  const d=DRAFTS[q.id];
  if(d&&d.length&&!REVEALED[q.id])return `${[...d].sort().join(', ')} (chưa chấm)`;
+ const lr=typeof LR!=='undefined'&&LR[q.id];
+ if(lr&&lr.checked&&lr.picks&&lr.picks.length)return `${[...lr.picks].sort().join(', ')} (${lr.ok?'đúng':'sai'})`;
  const rec=PICKS[q.id];
- if(rec)return `${rec.k.join(', ')} (${rec.ok?'đúng':'sai'})`;
+ /* PICKS lưu theo mã gốc → đổi sang chữ cái đang hiển thị (khi đang trộn phương án) */
+ if(rec)return `${rec.k.map(k=>{const o=q.options.find(o=>(o._k||o.k)===k);return o?o.k:k}).sort().join(', ')} (${rec.ok?'đúng':'sai'})`;
  const p=presentP(q.id);
  if(p.lastCorrect===true||p.lastCorrect===false)return `(bản cũ chưa lưu lựa chọn cụ thể) – lần làm gần nhất: ${p.lastCorrect?'đúng':'sai'}`;
  return '(chưa làm)';
