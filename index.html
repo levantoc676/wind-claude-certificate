@@ -759,6 +759,15 @@ details.cr-fold>summary{list-style:none;display:flex;align-items:center;justify-
 details.cr-fold>summary::-webkit-details-marker{display:none}
 details.cr-fold>summary h2{margin:0}
 details.cr-fold[open]>summary{margin-bottom:12px}
+.cr-xl{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--stroke);border-radius:12px;overflow:hidden;font-size:15px}
+.cr-xl th,.cr-xl td{border:1px solid var(--stroke);padding:8px 12px;text-align:left;vertical-align:middle}
+.cr-xl thead th{background:var(--surface2);font-size:12.5px;color:var(--muted);font-weight:800}
+.cr-xl tbody th{width:56px;text-align:center;font:800 18px var(--mono);color:var(--accent);background:var(--surface2)}
+.cr-xl td{line-height:2}
+.cr-xl-item{display:inline-flex;align-items:center;gap:6px;margin:2px 14px 2px 0;white-space:nowrap}
+.cr-xl-item b{color:var(--green)}
+.cr-xl-n{width:70px;text-align:center!important;font-family:var(--mono);color:var(--soft)}
+@media(max-width:760px){.cr-xl-n{display:none}.cr-xl-item{white-space:normal}}
 </style>
 </head>
 <body>
@@ -2779,7 +2788,8 @@ function renderCrampSure(){
  const chips=qs=>qs.map(q=>{const p=presentP(q.id),st=p.lastCorrect===true?'ok':p.lastCorrect===false?'no':'';return `<button type="button" class="qchip ${st}" data-action="openQ" data-id="${esc(q.id)}">#${String(q.n).padStart(3,'0')}</button>`}).join('');
  const tbl=(rows,cls)=>`<div class="cr-table">${rows.map(r=>`<div class="cr-row cr-sure-row"><div class="cr-k ${cls}">${esc(r.k)}</div><div class="cr-cnt">${r.qs.length} câu</div><div class="tip-q">${chips(r.qs)}</div></div>`).join('')}</div>`;
  return `<section class="tips-sec" id="cr-s-good"><h2>✅ Chữ đầu của đáp án: 100% đúng <small>Chưa lần nào đứng đầu một đáp án sai trong ${Object.keys(CP_BY_N).length} câu CCAR-P (xuất hiện ≥ 2 câu)</small></h2>${tbl(good,'cr-good')}</section>
- <section class="tips-sec" id="cr-s-one"><details class="cr-fold" ${UI.crOneOpen?'open':''}><summary><h2>✅ Chữ đầu đúng, chỉ xuất hiện ở 1 câu <small>${good1.length} chữ · A–Z · chưa đủ căn cứ để coi là quy luật, dùng để nhớ theo từng câu</small></h2><span class="tp-fold-lbl">${UI.crOneOpen?'Thu gọn':'Mở'}</span></summary>${tbl(good1,'cr-good')}</details></section>
+ <section class="tips-sec" id="cr-s-one"><details class="cr-fold" ${UI.crOneOpen?'open':''}><summary><h2>✅ Chữ đầu đúng, chỉ xuất hiện ở 1 câu <small>${good1.length} chữ · A–Z · chưa đủ căn cứ để coi là quy luật, dùng để nhớ theo từng câu</small></h2><span class="tp-fold-lbl">${UI.crOneOpen?'Thu gọn':'Mở'}</span></summary>${(()=>{const G={};for(const r of good1){const L=r.k.charAt(0).toUpperCase();(G[L]=G[L]||[]).push(r)}
+  return `<table class="cr-xl"><thead><tr><th>Chữ</th><th>Chữ đầu của đáp án đúng (số câu)</th><th>Số chữ</th></tr></thead><tbody>${Object.keys(G).sort().map(L=>`<tr><th>${L}</th><td>${G[L].map(r=>`<span class="cr-xl-item"><b>${esc(r.k)}</b>${chips(r.qs)}</span>`).join('')}</td><td class="cr-xl-n">${G[L].length}</td></tr>`).join('')}</tbody></table>`})()}</details></section>
  <section class="tips-sec" id="cr-s-phr"><h2>✅ Cụm từ nằm trong đáp án: 100% đúng <small>Xuất hiện ở bất kỳ vị trí nào trong đáp án, chưa lần nào ở đáp án sai</small></h2>${tbl(phr,'cr-good')}<p class="tiny" style="margin-top:8px">MCP viết đầy đủ “Model Context Protocol (MCP)” chỉ có ở đáp án đúng; đáp án sai thường chỉ viết tắt “MCP”.</p></section>
  <section class="tips-sec" id="cr-s-bad"><h2>❌ Chữ đầu của đáp án: chưa lần nào đúng <small>Thấy đáp án mở đầu bằng các chữ này thì loại trước (xuất hiện ≥ 3 câu)</small></h2>${tbl(bad,'cr-bad')}</section>
  <section class="tips-sec" id="cr-s-exp"><h2>💡 Kinh nghiệm <small>Mẹo rút ra khi ôn, ghi thêm dần</small></h2>
