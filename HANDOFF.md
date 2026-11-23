@@ -58,17 +58,17 @@ Cập nhật: 23/11/2026
 - **Panel Mẹo** ở Ôn tập, theo thứ tự: Học tủ (đóng khung, lên đầu), mẹo câu này, Dịch ngắn gọn, Mẹo cùng chủ đề (thu gọn), Mẹo thi CCAR-P liên quan.
 - **Thanh bên trái** thu gọn và mở rộng được.
 
-## Việc còn treo (người dùng chưa chốt)
-1. Đề của 5 câu CCAR-P **bị lộ đáp án**, do nguồn Study Atlas tự viết thêm phần ghi chú:
-   - #017, #023, #037: "claims X and Y are false"
-   - #036: "…is removed"
-   - #032: ghi chú về OCR
+## Quyết định đã chốt (23/11/2026)
+- **Không sửa** đề 5 câu CCAR-P có ghi chú lộ đáp án (#017, #023, #032, #036, #037). Giữ nguyên, đừng đề xuất lại.
+- **Không thêm** mục "⚠ Chữ đầu lúc đúng lúc sai" vào tab Học tủ.
 
-   Đề xuất: bỏ phần ghi chú lộ đáp án và giữ các nhận định đã biết. Đang chờ người dùng đồng ý.
-2. Thêm câu "Each correct answer presents part of / a complete solution" vào các câu chọn 2 cho giống đề gốc. Nguồn là file CCAR-P-Trainer người dùng đã gửi. Đang chờ người dùng đồng ý.
-3. Đề nghị thêm mục "⚠ Chữ đầu lúc đúng lúc sai" vào tab Học tủ. Người dùng chưa trả lời.
-4. 6 câu hay quên chưa có memo. Người dùng chưa trả lời.
-5. Cập nhật link artifact theo repo (phải làm từ chat mở ở trang artifact).
+## Việc còn treo
+1. **Để sau:** thêm câu "Each correct answer presents part of / a complete solution" vào 45 câu CCAR-P chọn 2. Cần người dùng gửi lại file CCAR-P-Trainer.
+2. **Để sau:** viết memo Học tủ cho 6 câu hay quên. Chờ người dùng gửi số câu.
+3. Cập nhật link artifact theo repo (phải làm từ chat mở ở trang artifact).
+
+## Lưu ý về nhánh
+- Nhánh `ninja-theme` trên GitHub đã cũ. `main` mới là bản đầy đủ. Khi bắt đầu, chạy `git checkout -B ninja-theme origin/main` rồi mới làm, đẩy bằng `git push origin ninja-theme:main`.
 
 ## Cách kiểm tra trước khi đẩy
 - Dùng Playwright với Chrome (`/usr/bin/google-chrome`), chạy file `index.html` local.
