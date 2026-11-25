@@ -767,6 +767,9 @@ details.cr-fold>summary h3{margin:0}
 .xf-cmp{margin-top:22px}
 .xf-fold[open]>summary .tp-fold-lbl,.xf-fold>summary:hover .tp-fold-lbl{background:var(--surface2)}
 .xf-fold .result-list{margin-top:0}
+.result-panel #wrongCheck{margin-top:22px;max-width:none}
+.result-panel #wrongCheck>.xf-fold{background:transparent;border:0;border-top:1px solid var(--stroke);border-radius:0;padding:16px 0 0}
+.result-panel #wrongCheck>p.muted{margin:0}
 .cr-xl{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--stroke);border-radius:12px;overflow:hidden;font-size:15px}
 .cr-xl th,.cr-xl td{border:1px solid var(--stroke);padding:8px 12px;text-align:left;vertical-align:middle}
 .cr-xl thead th{background:var(--surface2);font-size:12.5px;color:var(--muted);font-weight:800}
@@ -1663,7 +1666,7 @@ function wrongAction(btn){
 {const _ec=examCandidates;examCandidates=function(){return WRONG_ONLY?WRONG_ONLY.map(id=>INDEX[id]).filter(Boolean):_ec()}}
 document.addEventListener('change',e=>{if(e.target&&e.target.id==='xrOnlyWrong'){UI.xrOnlyWrong=e.target.checked;save();renderContentKeepScroll()}});
 document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('[data-xr]');if(!a)return;e.preventDefault();const el=document.getElementById('xr-'+a.dataset.xr);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});else{UI.xrOnlyWrong=false;save();renderContentKeepScroll();setTimeout(()=>document.getElementById('xr-'+a.dataset.xr)?.scrollIntoView({block:'start'}),30)}});
-{const _rer=renderExamResult;renderExamResult=function(){const h=_rer();return EXAM&&EXAM.result?h+examWrongCheckHTML()+wrongBookHTML():h}}
+{const _rer=renderExamResult;renderExamResult=function(){const h=_rer();if(!(EXAM&&EXAM.result)||!h.endsWith('</div>'))return h;return h.slice(0,-6)+examWrongCheckHTML()+'</div>'+wrongBookHTML()}}
 {const _re=renderExam;renderExam=function(){const h=_re();if(!EXAM)return h+wrongBookHTML();
  if(EXAM.done)return h;const mk='<div class="sectiontop"><h3>Điều hướng câu hỏi</h3>',i=h.indexOf(mk);if(i<0||!h.endsWith('</div>'))return h;
  return `<div class="exam-2col">${h.slice(0,i)}</div><aside class="exam-nav">${h.slice(i,-6)}</aside></div>`}}
