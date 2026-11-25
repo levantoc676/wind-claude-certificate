@@ -9,11 +9,10 @@ Cập nhật: 23/11/2026
   - `#/on-tap`: Ôn tập câu hỏi
   - `#/meo-thi`: Mẹo thi CCAR-P
   - `#/hoc-tu`: Học tủ (CCAO-F / CCAR-P)
-  - `#/de-ccao`: Đề CCAO-F (xem đề + đáp án đúng luôn)
   - `#/hoc-tu-moi`: Học từ mới
   - `#/thi-thu`: Thi thử
   - `#/thong-ke`: Thống kê
-- **Tab "Đề CCAO-F"** (`UI.view='ccao'`, 25/11): danh sách 119 câu CCAO-F hiện sẵn đề + đáp án đúng (tô xanh), kèm key/đáp án Học tủ và mẹo. Có lọc chủ đề AO (`UI.aoDom`), sắp xếp gốc / theo key (`UI.aoSort`), tìm kiếm, bật tiếng Việt (`UI.aoVI`), chỉ hiện đáp án đúng (`UI.aoOnly`). Code ở script `renderCcao` cuối file.
+- **Ôn tập: checkbox "Hiện đáp án đúng luôn"** (`UI.showAns`, 25/11): tô xanh đáp án đúng và mở sẵn panel Mẹo / Học tủ; khi bật thì bấm phương án không chấm, không ghi tiến độ. Thay cho tab "Đề CCAO-F" đã thử rồi bỏ.
 - **Tab Flashcards đã bỏ** (25/11): gỡ khỏi `VIEWS_ON`, thanh bên và `ROUTES`; mở `#/flashcards` sẽ về Ôn tập. Code render flashcard vẫn còn trong file nhưng không dùng.
 - Link artifact (https://claude.ai/artifact/1q3qpVrDmcKmeab5eSmgWb) đang **cũ hơn repo nhiều**. Chỉ cập nhật được từ một chat mở ở chính trang artifact đó.
 - Nhật ký đồng bộ dữ liệu: `DONG-BO-DU-LIEU.md` (trong repo, đã chép vào Project ở `claude/dong-bo-du-lieu.md`). Hiện tới **Lần 12**.
