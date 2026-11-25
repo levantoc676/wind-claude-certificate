@@ -14,13 +14,15 @@ Cập nhật: 23/11/2026
   - `#/thi-thu`: Thi thử
   - `#/thong-ke`: Thống kê
 - Link artifact (https://claude.ai/artifact/1q3qpVrDmcKmeab5eSmgWb) đang **cũ hơn repo nhiều**. Chỉ cập nhật được từ một chat mở ở chính trang artifact đó.
-- Nhật ký đồng bộ dữ liệu: `DONG-BO-DU-LIEU.md` (trong repo, đã chép vào Project ở `claude/dong-bo-du-lieu.md`). Hiện tới **Lần 11**.
+- Nhật ký đồng bộ dữ liệu: `DONG-BO-DU-LIEU.md` (trong repo, đã chép vào Project ở `claude/dong-bo-du-lieu.md`). Hiện tới **Lần 12**.
 
 ## Dữ liệu (nằm trong index.html)
 - `<script type="application/json" id="wcc-data">`: **489 câu**.
   - CCAR-F 162, CCAR-P 113, CCDV-F 95, CCAO-F 119.
   - 5 câu trùng đã bị bỏ: CCAR-P #105, #108, #109 và CCDV-F #047, #067.
 - `id="wcc-tips"`: tab Mẹo thi CCAR-P. Có 146 mẹo chia theo D1–D7, mỗi mẹo kèm số câu liên quan.
+- `id="wcc-cramo"`: **Học tủ CCAO-F** (25/11), cùng dạng với `wcc-cramp`. Tab Học tủ có nút chọn bộ CCAR-P / CCAO-F (`UI.crBank`, ngữ cảnh `crCtx()` / biến `CX`). Mục Yes/No và 💡 Kinh nghiệm chỉ có ở CCAR-P.
+- CCAO-F chia 7 domain **AO1–AO7 = D1–D7** theo exam guide CCAO-F (Claude tự phân loại, xem Lần 12 trong DONG-BO-DU-LIEU.md).
 - `id="wcc-cramp"`: **Học tủ CCAR-P**. Dạng `{ "<số câu>": { "k": "key trong đề", "a": "đáp án tủ" } }`.
   - Key dạng nhóm viết `phần1 | phần2`, ví dụ `BEFORE running | selecting a model`, `guardrail | tactics`, `HTTP | data-exfiltration`, `Trenova Systems | p95`, `Diligence | actions`.
   - Phần trong ngoặc tiếng Việt tự hiện màu đỏ.

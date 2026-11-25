@@ -170,3 +170,23 @@ Mã chủ đề AP của bộ CCAR-P (AP = **A**rchitect **P**rofessional) trư�
 - **Những gì giữ nguyên:**
   - Tiến độ và lịch sử chọn vẫn lưu theo mã gốc, nên bỏ chế độ Ngẫu nhiên là mọi thứ về như cũ.
   - Thi thử giữ cách trộn phương án riêng của phòng thi, chỉ đảo thêm thứ tự (1)…(n).
+
+## Lần 12: 25/11/2026, chia domain CCAO-F (AO1–AO7) và thêm Học tủ CCAO-F
+
+- **Chia domain:** 119 câu CCAO-F trước đây chung một mục "Chủ đề 1", nay chia theo 7 domain của exam guide CCAO-F (bản 1.0, 07/2026). Đặt tên AOn = Dn, giống cách đánh số CCAR-P (APn = Dn).
+
+  | Mã | Domain | Tỷ trọng đề | Số câu |
+  |---|---|---|---|
+  | AO1 | Prompting & Task Execution | 14% | 21 |
+  | AO2 | Output Evaluation & Validation | 21% | 18 |
+  | AO3 | Product & Model Selection | 12% | 12 |
+  | AO4 | Workflow Integration & Solution Design | 16% | 14 |
+  | AO5 | Configuration & Knowledge Management | 12% | 14 |
+  | AO6 | Governance, Risk & Responsible Use | 15% | 21 |
+  | AO7 | Troubleshooting & Optimization | 10% | 19 |
+
+  - Nguồn đề không ghi domain, nên việc xếp câu vào domain do Claude tự phân loại theo nội dung. Quy ước cho 4 năng lực AI Fluency: Description → AO1, Discernment → AO2, Delegation → AO4, Diligence → AO6.
+  - Chỉ thêm `category` / `categoryName` cho câu CCAO-F; nội dung câu, đáp án, mã câu và tiến độ học không đổi.
+- **Học tủ CCAO-F:** khối dữ liệu mới `id="wcc-cramo"` (119 câu, cùng dạng `{ "<số câu>": { "k", "a" } }` như `wcc-cramp`).
+  - Key đề được kiểm tra tự động: có trong đề và chỉ có ở đúng câu đó trong bộ CCAO-F. Nhóm key: `correct order | …` (câu xếp thứ tự), `BEFORE … | …`, `first | …`, `Description | …`, `Delegation | …`.
+  - Đáp án tủ được kiểm tra tự động: khớp đáp án đúng và không là phần đầu của đáp án sai. Câu xếp thứ tự ghi đúng dãy số (vd `5, 4, 1, 3, 2`). Riêng #001 ghi theo ý (mọi phương án đều mở đầu bằng "Name Claude's role", đáp án đúng là phương án đủ cả 3 ý).
