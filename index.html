@@ -769,6 +769,21 @@ details.cr-fold>summary h3{margin:0}
 .xf-fold .result-list{margin-top:0}
 #bankNav{display:none!important}
 .ex-cancel{width:100%;margin-top:8px;padding:11px;font-size:13.5px;justify-content:center}
+/* Nút Nộp bài / Huỷ bài luôn hiện ở bên phải phòng thi */
+@media(min-width:901px){
+ .exam-2col:not(.xr-2col)>.exam-nav{display:flex;flex-direction:column;overflow:hidden}
+ .exam-2col:not(.xr-2col)>.exam-nav .palette{flex:1 1 auto;min-height:0;overflow:auto;padding:3px}
+ .exam-2col:not(.xr-2col)>.exam-nav .ex-btns{flex:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--stroke)}
+ .exam-2col:not(.xr-2col)>.exam-nav .ex-btns .ex-submit{margin-top:0}
+}
+@media(max-width:900px){
+ .exam-2col:not(.xr-2col) .ex-btns{position:fixed;right:10px;bottom:76px;z-index:40;display:flex;flex-direction:column;gap:6px;width:auto}
+ .exam-2col:not(.xr-2col) .ex-btns .btn{width:auto;margin:0;padding:8px 12px;font-size:12.5px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+ .exam-2col:not(.xr-2col) .ex-btns .ex-cancel{background:var(--surface)}
+ .ex-btns .lg{display:none}
+}
+@media(min-width:901px){.ex-btns .sh{display:none}
+}
 .result-panel #flagCheck{margin-top:22px}
 .result-panel #flagCheck>.xf-fold{background:transparent;border:0;border-top:1px solid var(--stroke);border-radius:0;padding:16px 0 0}
 .fl-list{display:grid;gap:14px}
@@ -1045,7 +1060,7 @@ function renderExam(){
  return `<div class="exam-shell"><div class="ex-status"><div class="ex-timer ${warn?'warning':''}"><span>⏳ Còn lại</span><div class="clock ${warn?'warning':''}" id="examClock">${timeString(time)}</div></div><div class="ex-info"><span class="eyebrow" style="margin:0">Phòng thi · ${total} câu</span><div class="ex-counts"><span class="ex-chip done">✓ Đã làm <b>${answered}/${total}</b></span><span class="ex-chip left">○ Chưa làm <b>${total-answered}</b></span><span class="ex-chip flag">⚑ Đánh dấu <b>${flagged}</b></span></div>${bar(percent(answered,total))}</div></div>
  <article class="qcard ex-q"><div class="ex-qhead"><span class="ex-num">Câu ${idx+1}<small> / ${total}</small></span>${pill(q.bank)} ${pill(categoryName(q))}${forgetBtn(q,'btn mini ex-fg')}<button class="btn mini ex-flag ${EXAM.flags[q.id]?'on':''}" data-action="examFlag">${EXAM.flags[q.id]?'⚑ Đang đánh dấu':'⚐ Đánh dấu'}</button></div><div class="q-content"><h3 class="q-stem">${esc(sourceText(q.stem))}</h3>${UI.lang!=='en'&&q.stem.en?`<details style="margin:0 0 15px"><summary class="tiny">Xem câu gốc tiếng Anh</summary><p class="q-english">${esc(q.stem.en)}</p></details>`:''}<p class="ex-hint">${q.multi?'☑ Chọn đủ <b>'+q.answer.length+'</b> phương án · đã chọn '+chosen.length+'/'+q.answer.length:'◉ Chọn <b>một</b> phương án'}</p><div class="options">${examOpts(q).map((o,i)=>`<button class="option ${chosen.includes(o.k)?'selected':''}" data-action="examPick" data-k="${o.k}"><span class="letter">${'ABCDEFGH'[i]}</span><span class="optiontext">${esc(sourceText(o.t))}</span></button>`).join('')}</div></div></article>
  <div class="ex-actions"><button class="btn" data-action="examPrev" ${idx===0?'disabled':''}>← Câu trước</button><span class="ex-pos">${idx+1} / ${total}</span><button class="btn ${idx===total-1?'':'primary'}" data-action="examNext" ${idx===total-1?'disabled':''}>Câu tiếp →</button></div>
- <div class="sectiontop"><h3>Điều hướng câu hỏi</h3><div class="ex-legend"><span><i class="lg-done"></i>Đã làm</span><span><i class="lg-left"></i>Chưa làm</span><span><i class="lg-flag"></i>Đánh dấu</span><span><i class="lg-fg"></i>Hay quên</span><span><i class="lg-cur"></i>Đang xem</span></div></div><div class="palette">${EXAM.ids.map((id,i)=>`<button class="palbtn ${i===idx?'current':''} ${(EXAM.answers[id]||[]).length?'answered':''} ${EXAM.flags[id]?'flagged':''} ${isForget(id)?'fg':''}" data-action="examJump" data-index="${i}">${i+1}</button>`).join('')}</div><button class="btn primary ex-submit" data-action="submitExam">✔ Nộp bài &amp; chấm điểm</button><button class="btn danger ex-cancel" data-action="cancelExam" title="Bỏ bài thi này, không chấm điểm, không lưu vào lịch sử">✕ Huỷ bài thi</button></div>`;
+ <div class="sectiontop"><h3>Điều hướng câu hỏi</h3><div class="ex-legend"><span><i class="lg-done"></i>Đã làm</span><span><i class="lg-left"></i>Chưa làm</span><span><i class="lg-flag"></i>Đánh dấu</span><span><i class="lg-fg"></i>Hay quên</span><span><i class="lg-cur"></i>Đang xem</span></div></div><div class="palette">${EXAM.ids.map((id,i)=>`<button class="palbtn ${i===idx?'current':''} ${(EXAM.answers[id]||[]).length?'answered':''} ${EXAM.flags[id]?'flagged':''} ${isForget(id)?'fg':''}" data-action="examJump" data-index="${i}">${i+1}</button>`).join('')}</div><div class="ex-btns"><button class="btn primary ex-submit" data-action="submitExam">✔ <span class="lg">Nộp bài &amp; chấm điểm</span><span class="sh">Nộp bài</span></button><button class="btn danger ex-cancel" data-action="cancelExam" title="Bỏ bài thi này, không chấm điểm, không lưu vào lịch sử">✕ <span class="lg">Huỷ bài thi</span><span class="sh">Huỷ</span></button></div></div>`;
 }
 function submitExam(auto=false){
  if(!EXAM||EXAM.done)return;
