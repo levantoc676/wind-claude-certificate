@@ -57,7 +57,7 @@ Cập nhật: 23/11/2026
   - Trên điện thoại có nút nổi "☰ Chọn câu khác" khi xem lại bài.
 - **Panel Mẹo** ở Ôn tập, theo thứ tự: Học tủ (đóng khung, lên đầu), mẹo câu này, Dịch ngắn gọn, Mẹo cùng chủ đề (thu gọn), Mẹo thi CCAR-P liên quan.
 - **Thanh bên trái** thu gọn và mở rộng được.
-- **Kết quả Thi thử:** Đối chiếu từng câu, Xem lại bài thi, Sổ câu sai thu gọn mặc định (lớp `xf-fold`, trạng thái mở không lưu, nộp bài mới thì thu gọn lại).
+- **Kết quả Thi thử** (25/11): chỉ còn điểm + mục "✕ Câu sai" (thu gọn, chỉ câu sai/bỏ trống, có nút 🧠 Hay quên) + Sổ câu sai. Đã bỏ "Đối chiếu từng câu", "Xem lại bài thi" đầy đủ và nút "Ôn lại câu sai". Sổ câu sai chỉ hiện câu sai ≥ 3 lần (`WRONG_MIN`, `wrongBookIds()`), nút Thi lại dùng cùng danh sách. Mục thu gọn dùng lớp `xf-fold`.
 - **Copy / dán text** có thêm phạm vi `forget` (🧠 Câu hay quên, key `claude.study.atlas.forget.v1`). Nút riêng ở tab Thống kê. Lưu ý: tab Dashboard đang tắt (`VIEWS_ON` không có `dashboard`).
 - **Lịch sử thi:** chỉ ghi khi bấm Nộp bài (chọn "Không giới hạn" thì không tự nộp). Tab Thống kê báo bài đang làm dở (`examPendingHTML`); `save()` báo toast khi localStorage không ghi được. Lịch sử lưu theo từng trình duyệt.
 
