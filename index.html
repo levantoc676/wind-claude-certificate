@@ -768,6 +768,7 @@ details.cr-fold>summary h3{margin:0}
 .xf-fold[open]>summary .tp-fold-lbl,.xf-fold>summary:hover .tp-fold-lbl{background:var(--surface2)}
 .xf-fold .result-list{margin-top:0}
 #bankNav{display:none!important}
+.ex-cancel{width:100%;margin-top:8px;padding:11px;font-size:13.5px;justify-content:center}
 .result-panel #flagCheck{margin-top:22px}
 .result-panel #flagCheck>.xf-fold{background:transparent;border:0;border-top:1px solid var(--stroke);border-radius:0;padding:16px 0 0}
 .fl-list{display:grid;gap:14px}
@@ -1044,7 +1045,7 @@ function renderExam(){
  return `<div class="exam-shell"><div class="ex-status"><div class="ex-timer ${warn?'warning':''}"><span>⏳ Còn lại</span><div class="clock ${warn?'warning':''}" id="examClock">${timeString(time)}</div></div><div class="ex-info"><span class="eyebrow" style="margin:0">Phòng thi · ${total} câu</span><div class="ex-counts"><span class="ex-chip done">✓ Đã làm <b>${answered}/${total}</b></span><span class="ex-chip left">○ Chưa làm <b>${total-answered}</b></span><span class="ex-chip flag">⚑ Đánh dấu <b>${flagged}</b></span></div>${bar(percent(answered,total))}</div></div>
  <article class="qcard ex-q"><div class="ex-qhead"><span class="ex-num">Câu ${idx+1}<small> / ${total}</small></span>${pill(q.bank)} ${pill(categoryName(q))}${forgetBtn(q,'btn mini ex-fg')}<button class="btn mini ex-flag ${EXAM.flags[q.id]?'on':''}" data-action="examFlag">${EXAM.flags[q.id]?'⚑ Đang đánh dấu':'⚐ Đánh dấu'}</button></div><div class="q-content"><h3 class="q-stem">${esc(sourceText(q.stem))}</h3>${UI.lang!=='en'&&q.stem.en?`<details style="margin:0 0 15px"><summary class="tiny">Xem câu gốc tiếng Anh</summary><p class="q-english">${esc(q.stem.en)}</p></details>`:''}<p class="ex-hint">${q.multi?'☑ Chọn đủ <b>'+q.answer.length+'</b> phương án · đã chọn '+chosen.length+'/'+q.answer.length:'◉ Chọn <b>một</b> phương án'}</p><div class="options">${examOpts(q).map((o,i)=>`<button class="option ${chosen.includes(o.k)?'selected':''}" data-action="examPick" data-k="${o.k}"><span class="letter">${'ABCDEFGH'[i]}</span><span class="optiontext">${esc(sourceText(o.t))}</span></button>`).join('')}</div></div></article>
  <div class="ex-actions"><button class="btn" data-action="examPrev" ${idx===0?'disabled':''}>← Câu trước</button><span class="ex-pos">${idx+1} / ${total}</span><button class="btn ${idx===total-1?'':'primary'}" data-action="examNext" ${idx===total-1?'disabled':''}>Câu tiếp →</button></div>
- <div class="sectiontop"><h3>Điều hướng câu hỏi</h3><div class="ex-legend"><span><i class="lg-done"></i>Đã làm</span><span><i class="lg-left"></i>Chưa làm</span><span><i class="lg-flag"></i>Đánh dấu</span><span><i class="lg-fg"></i>Hay quên</span><span><i class="lg-cur"></i>Đang xem</span></div></div><div class="palette">${EXAM.ids.map((id,i)=>`<button class="palbtn ${i===idx?'current':''} ${(EXAM.answers[id]||[]).length?'answered':''} ${EXAM.flags[id]?'flagged':''} ${isForget(id)?'fg':''}" data-action="examJump" data-index="${i}">${i+1}</button>`).join('')}</div><button class="btn primary ex-submit" data-action="submitExam">✔ Nộp bài &amp; chấm điểm</button></div>`;
+ <div class="sectiontop"><h3>Điều hướng câu hỏi</h3><div class="ex-legend"><span><i class="lg-done"></i>Đã làm</span><span><i class="lg-left"></i>Chưa làm</span><span><i class="lg-flag"></i>Đánh dấu</span><span><i class="lg-fg"></i>Hay quên</span><span><i class="lg-cur"></i>Đang xem</span></div></div><div class="palette">${EXAM.ids.map((id,i)=>`<button class="palbtn ${i===idx?'current':''} ${(EXAM.answers[id]||[]).length?'answered':''} ${EXAM.flags[id]?'flagged':''} ${isForget(id)?'fg':''}" data-action="examJump" data-index="${i}">${i+1}</button>`).join('')}</div><button class="btn primary ex-submit" data-action="submitExam">✔ Nộp bài &amp; chấm điểm</button><button class="btn danger ex-cancel" data-action="cancelExam" title="Bỏ bài thi này, không chấm điểm, không lưu vào lịch sử">✕ Huỷ bài thi</button></div>`;
 }
 function submitExam(auto=false){
  if(!EXAM||EXAM.done)return;
@@ -3013,10 +3014,18 @@ document.addEventListener('click',e=>{const g=e.target.closest&&e.target.closest
 {let _wt=0;const _s=save;save=function(){const ok=_s.apply(this,arguments);if(ok===false&&Date.now()-_wt>20000){_wt=Date.now();toast('⚠ Không lưu được dữ liệu học: bộ nhớ của trình duyệt đã đầy hoặc đang chặn lưu (ẩn danh). Kết quả thi sẽ mất khi tải lại trang.')}return ok}}
 function examPendingHTML(){if(!EXAM||EXAM.done||!Array.isArray(EXAM.ids))return '';
  const n=EXAM.ids.length,done=EXAM.ids.filter(id=>(EXAM.answers[id]||[]).length).length;
- return `<div class="infostrip alert"><span class="symbol">⏸</span><div style="flex:1"><b>Có 1 bài thi đang làm dở, chưa nộp</b> · đã làm ${done}/${n} câu · bắt đầu ${esc(localTime(new Date(EXAM.started).toISOString()))}${EXAM.minutes?'':' · không giới hạn thời gian'}<br><span class="tiny">Bài chỉ được ghi vào lịch sử sau khi bấm <b>✔ Nộp bài &amp; chấm điểm</b>. Chọn “Không giới hạn” thì bài không tự nộp.</span></div><div class="toolrow"><button class="btn mini primary" data-view="exam">Tiếp tục làm bài →</button></div></div>`}
+ return `<div class="infostrip alert"><span class="symbol">⏸</span><div style="flex:1"><b>Có 1 bài thi đang làm dở, chưa nộp</b> · đã làm ${done}/${n} câu · bắt đầu ${esc(localTime(new Date(EXAM.started).toISOString()))}${EXAM.minutes?'':' · không giới hạn thời gian'}<br><span class="tiny">Bài chỉ được ghi vào lịch sử sau khi bấm <b>✔ Nộp bài &amp; chấm điểm</b>. Chọn “Không giới hạn” thì bài không tự nộp.</span></div><div class="toolrow"><button class="btn mini primary" data-view="exam">Tiếp tục làm bài →</button><button class="btn mini danger" data-action="cancelExam">✕ Huỷ bài</button></div></div>`}
 {const _rs=renderStats;renderStats=function(){const h=_rs(),mk='<div class="sectiontop"><h2>Lịch sử thi thử</h2>',i=h.indexOf(mk);if(i<0)return h;
  const note='<p class="tiny" style="margin:-6px 0 12px">Lịch sử lưu riêng trên trình duyệt này. Thi trên máy hoặc trình duyệt khác thì dùng ⇅ Copy / dán text (Toàn bộ dữ liệu) để chuyển sang.</p>';
  const j=h.indexOf('</div>',i)+6;return h.slice(0,i)+examPendingHTML()+h.slice(i,j)+note+h.slice(j)}}
+</script>
+<script>
+/* ===== Huỷ bài thi thử: bỏ bài, không chấm, không ghi lịch sử / tiến độ / Sổ câu sai ===== */
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-action=cancelExam]');if(!b)return;e.preventDefault();e.stopPropagation();
+ if(!EXAM||EXAM.done)return;
+ const n=EXAM.ids.length,done=EXAM.ids.filter(id=>(EXAM.answers[id]||[]).length).length;
+ if(!safeConfirm(`Huỷ bài thi (đã làm ${done}/${n} câu)? Bài sẽ không được chấm và không lưu vào lịch sử.`))return;
+ EXAM=null;save();render();window.scrollTo({top:0,behavior:'instant'});toast('Đã huỷ bài thi.')},true);
 </script>
 </body>
 </html>
