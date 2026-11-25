@@ -190,3 +190,4 @@ Mã chủ đề AP của bộ CCAR-P (AP = **A**rchitect **P**rofessional) trư�
 - **Học tủ CCAO-F:** khối dữ liệu mới `id="wcc-cramo"` (119 câu, cùng dạng `{ "<số câu>": { "k", "a" } }` như `wcc-cramp`).
   - Key đề được kiểm tra tự động: có trong đề và chỉ có ở đúng câu đó trong bộ CCAO-F. Nhóm key: `correct order | …` (câu xếp thứ tự), `BEFORE … | …`, `first | …`, `Description | …`, `Delegation | …`.
   - Đáp án tủ được kiểm tra tự động: khớp đáp án đúng và không là phần đầu của đáp án sai. Câu xếp thứ tự ghi đúng dãy số (vd `5, 4, 1, 3, 2`). Riêng #001 ghi theo ý (mọi phương án đều mở đầu bằng "Name Claude's role", đáp án đúng là phương án đủ cả 3 ý).
+- **Bổ sung (25/11):** 13 câu xếp thứ tự của Học tủ CCAO-F ghi thêm chữ đầu của từng bước theo đúng thứ tự đáp án, ví dụ `5, 4, 1, 3, 2 (Read, Identify, Cross-check, Document, Decide)`. Nếu trong một câu có hai bước cùng chữ đầu thì ghi thêm chữ kế tiếp (vd `Identify audience`, `Identify data`).
