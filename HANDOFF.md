@@ -59,6 +59,7 @@ Cập nhật: 23/11/2026
 - **Thanh bên trái** thu gọn và mở rộng được.
 - **Kết quả Thi thử:** Đối chiếu từng câu, Xem lại bài thi, Sổ câu sai thu gọn mặc định (lớp `xf-fold`, trạng thái mở không lưu, nộp bài mới thì thu gọn lại).
 - **Copy / dán text** có thêm phạm vi `forget` (🧠 Câu hay quên, key `claude.study.atlas.forget.v1`). Nút riêng ở tab Thống kê. Lưu ý: tab Dashboard đang tắt (`VIEWS_ON` không có `dashboard`).
+- **Lịch sử thi:** chỉ ghi khi bấm Nộp bài (chọn "Không giới hạn" thì không tự nộp). Tab Thống kê báo bài đang làm dở (`examPendingHTML`); `save()` báo toast khi localStorage không ghi được. Lịch sử lưu theo từng trình duyệt.
 
 ## Quyết định đã chốt (23/11/2026)
 - **Không sửa** đề 5 câu CCAR-P có ghi chú lộ đáp án (#017, #023, #032, #036, #037). Giữ nguyên, đừng đề xuất lại.

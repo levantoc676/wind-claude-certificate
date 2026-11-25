@@ -2989,5 +2989,15 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
 document.addEventListener('toggle',e=>{const d=e.target;if(d&&d.classList&&d.classList.contains('cr-fold')){UI.crOneOpen=d.open;try{save()}catch(_){}const l=d.querySelector('.tp-fold-lbl');if(l)l.textContent=d.open?'Thu gọn':'Mở'}},true);
 document.addEventListener('click',e=>{const g=e.target.closest&&e.target.closest('[data-tipgo="cr-s-one"]');if(g){const d=document.querySelector('#cr-s-one details');if(d&&!d.open){d.open=true}}},true);
 </script>
+<script>
+/* ===== Lịch sử thi: báo khi không lưu được + nhắc bài thi đang làm dở (chưa nộp thì chưa vào lịch sử) ===== */
+{let _wt=0;const _s=save;save=function(){const ok=_s.apply(this,arguments);if(ok===false&&Date.now()-_wt>20000){_wt=Date.now();toast('⚠ Không lưu được dữ liệu học: bộ nhớ của trình duyệt đã đầy hoặc đang chặn lưu (ẩn danh). Kết quả thi sẽ mất khi tải lại trang.')}return ok}}
+function examPendingHTML(){if(!EXAM||EXAM.done||!Array.isArray(EXAM.ids))return '';
+ const n=EXAM.ids.length,done=EXAM.ids.filter(id=>(EXAM.answers[id]||[]).length).length;
+ return `<div class="infostrip alert"><span class="symbol">⏸</span><div style="flex:1"><b>Có 1 bài thi đang làm dở, chưa nộp</b> · đã làm ${done}/${n} câu · bắt đầu ${esc(localTime(new Date(EXAM.started).toISOString()))}${EXAM.minutes?'':' · không giới hạn thời gian'}<br><span class="tiny">Bài chỉ được ghi vào lịch sử sau khi bấm <b>✔ Nộp bài &amp; chấm điểm</b>. Chọn “Không giới hạn” thì bài không tự nộp.</span></div><div class="toolrow"><button class="btn mini primary" data-view="exam">Tiếp tục làm bài →</button></div></div>`}
+{const _rs=renderStats;renderStats=function(){const h=_rs(),mk='<div class="sectiontop"><h2>Lịch sử thi thử</h2>',i=h.indexOf(mk);if(i<0)return h;
+ const note='<p class="tiny" style="margin:-6px 0 12px">Lịch sử lưu riêng trên trình duyệt này. Thi trên máy hoặc trình duyệt khác thì dùng ⇅ Copy / dán text (Toàn bộ dữ liệu) để chuyển sang.</p>';
+ const j=h.indexOf('</div>',i)+6;return h.slice(0,i)+examPendingHTML()+h.slice(i,j)+note+h.slice(j)}}
+</script>
 </body>
 </html>
