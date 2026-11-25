@@ -57,6 +57,8 @@ Cập nhật: 23/11/2026
   - Trên điện thoại có nút nổi "☰ Chọn câu khác" khi xem lại bài.
 - **Panel Mẹo** ở Ôn tập, theo thứ tự: Học tủ (đóng khung, lên đầu), mẹo câu này, Dịch ngắn gọn, Mẹo cùng chủ đề (thu gọn), Mẹo thi CCAR-P liên quan.
 - **Thanh bên trái** thu gọn và mở rộng được.
+- **Kết quả Thi thử:** Đối chiếu từng câu, Xem lại bài thi, Sổ câu sai thu gọn mặc định (lớp `xf-fold`, trạng thái mở không lưu, nộp bài mới thì thu gọn lại).
+- **Copy / dán text** có thêm phạm vi `forget` (🧠 Câu hay quên, key `claude.study.atlas.forget.v1`). Nút riêng ở tab Thống kê. Lưu ý: tab Dashboard đang tắt (`VIEWS_ON` không có `dashboard`).
 
 ## Quyết định đã chốt (23/11/2026)
 - **Không sửa** đề 5 câu CCAR-P có ghi chú lộ đáp án (#017, #023, #032, #036, #037). Giữ nguyên, đừng đề xuất lại.
