@@ -924,7 +924,7 @@ function load(){
  const d=safeLs.get(LS_KEY);
  if(d){try{const x=JSON.parse(d);P=x.progress||{};HISTORY=Array.isArray(x.history)?x.history:[];EXAM=x.exam||null;if(x.ui)UI={...UI,...x.ui};if(!UI.enDefault){UI.lang='en';UI.enDefault=true}}catch{}}
  else if(migrateLegacy()){save()}
- UI.view=['dashboard','know','study','learn','flash','cram','vocab','notebook','exam','stats'].includes(UI.view)?UI.view:'dashboard';
+ UI.view=['dashboard','know','study','learn','flash','cram','vocab','notebook','exam','stats','tips','cramp','ccao'].includes(UI.view)?UI.view:'dashboard';
  UI.theme=UI.theme==='light'?'light':'dark';
  document.documentElement.dataset.theme=UI.theme;
  UI.lang=['en','vi','jp'].includes(UI.lang)?UI.lang:'en';
@@ -981,7 +981,7 @@ function setBank(id){UI.bank=id;UI.topic='all';UI.page=1;UI.flashIndex=0;UI.flip
 function jumpQuestion(id){const q=INDEX[id];if(!q)return;UI.bank=q.bank;UI.topic='all';UI.status='all';UI.search='';UI.sort='original';UI.view='study';UI.page=Math.floor(selectedPoolBase().findIndex(x=>x.id===id)/UI.perPage)+1;save();render();requestAnimationFrame(()=>document.getElementById('question-'+CSS.escape(id))?.scrollIntoView({behavior:'smooth',block:'start'}))}
 function iconForBank(b){return {'CCAR-F':'AF','CCAR-P':'AP','CCDV-F':'DF','CCAO-F':'AsF'}[b]||'ALL'}
 function renderChrome(){
- const views=[['learn','Ôn tập câu hỏi','▤'],['tips','Mẹo thi CCAR-P','✪'],['cramp','Học tủ','✎'],['vocab','Học từ mới','✿'],['exam','Thi thử','◎'],['stats','Thống kê','▥']];
+ const views=[['learn','Ôn tập câu hỏi','▤'],['tips','Mẹo thi CCAR-P','✪'],['cramp','Học tủ','✎'],['ccao','Đề CCAO-F','✦'],['vocab','Học từ mới','✿'],['exam','Thi thử','◎'],['stats','Thống kê','▥']];
  const side=$('#sidebar');
  side.classList.toggle('open',UI.mobile);
  $('#shade').classList.toggle('active',UI.mobile);
@@ -991,7 +991,7 @@ function renderChrome(){
  }).join('')+`<button class="bank-nav ${UI.bank==='ALL'?'active':''}" data-bank="ALL" title="Tất cả bộ học"><span class="bank-monogram">Σ</span><span class="bank-title">Tất cả bộ học<span>${Q.length} câu · học xuyên bộ</span></span></button>`;
  $('#themeBtn').textContent=UI.theme==='dark'?'☀':'☾';
  $('#globalSearch').value=UI.search;
- $('#topTitle').textContent=({dashboard:'Không gian tự học',study:'Ôn tập chủ động',flash:'Ghi nhớ nhanh',learn:'Ôn tập câu hỏi · tra từ',tips:'Mẹo thi CCAR-P',cramp:'Học tủ · '+(UI.crBank==='CCAR-P'?'CCAR-P':'CCAO-F'),know:'Kiến thức thi CCDV-F',cram:'Học tủ · nhớ nhanh đáp án',vocab:'Học từ mới · sổ từ',notebook:'Sổ tay kiến thức',exam:'Phòng thi thử',stats:'Tiến độ học tập'})[UI.view];
+ $('#topTitle').textContent=({dashboard:'Không gian tự học',study:'Ôn tập chủ động',flash:'Ghi nhớ nhanh',learn:'Ôn tập câu hỏi · tra từ',tips:'Mẹo thi CCAR-P',cramp:'Học tủ · '+(UI.crBank==='CCAR-P'?'CCAR-P':'CCAO-F'),ccao:'Đề CCAO-F · đề + đáp án',know:'Kiến thức thi CCDV-F',cram:'Học tủ · nhớ nhanh đáp án',vocab:'Học từ mới · sổ từ',notebook:'Sổ tay kiến thức',exam:'Phòng thi thử',stats:'Tiến độ học tập'})[UI.view];
  $('#topSubtitle').textContent=UI.bank==='ALL'?'Tất cả '+BANKS.length+' chứng chỉ':labelBank(UI.bank);
  $('#langSelect').value=UI.lang;
  applyV3Chrome();
@@ -1001,7 +1001,7 @@ function renderMain(){let out;normView();
  switch(UI.view){case 'study':out=renderStudy();break;case'flash':out=renderFlash();break;case'cram':out=renderCram();break;case'vocab':out=renderVocab();break;case'learn':out=renderLearn();break;case'know':out=renderKnow();break;case'notebook':out=renderNotebook();break;case'exam':out=renderExam();break;case'stats':out=renderStats();break;default:out=renderDashboard()}
  $('#content').innerHTML=out+renderFooter();
 }
-const VIEWS_ON=['learn','tips','cramp','vocab','exam','stats'];
+const VIEWS_ON=['learn','tips','cramp','ccao','vocab','exam','stats'];
 function normView(){if(!VIEWS_ON.includes(UI.view))UI.view='learn'}
 function render(){normView();renderChrome();renderMain()}
 const LEAF_URI='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2016%2016%22%20shape-rendering%3D%22crispEdges%22%3E%3Crect%20x%3D%2210%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2211%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2212%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2213%22%20y%3D%222%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%228%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%229%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2210%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2211%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2212%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2213%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2214%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%227%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%228%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%229%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2210%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2211%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2212%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2213%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2214%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%226%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%227%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%228%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%229%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2210%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2211%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2212%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2213%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%2214%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%225%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%226%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%227%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%228%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%229%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2210%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2211%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2212%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%2213%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%224%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%225%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%226%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%227%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%228%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%229%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2210%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2211%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%2212%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%2213%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%224%22%20y%3D%228%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%225%22%20y%3D%228%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%226%22%20y%3D%228%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%227%22%20y%3D%228%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%228%22%20y%3D%228%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%229%22%20y%3D%228%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%2210%22%20y%3D%228%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%2211%22%20y%3D%228%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%2212%22%20y%3D%228%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%223%22%20y%3D%229%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%224%22%20y%3D%229%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%225%22%20y%3D%229%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%226%22%20y%3D%229%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%227%22%20y%3D%229%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%228%22%20y%3D%229%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%229%22%20y%3D%229%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%2210%22%20y%3D%229%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%2211%22%20y%3D%229%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%223%22%20y%3D%2210%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%224%22%20y%3D%2210%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%225%22%20y%3D%2210%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%226%22%20y%3D%2210%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%227%22%20y%3D%2210%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%237ad957%22/%3E%3Crect%20x%3D%228%22%20y%3D%2210%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%229%22%20y%3D%2210%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%2210%22%20y%3D%2210%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%223%22%20y%3D%2211%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%224%22%20y%3D%2211%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%225%22%20y%3D%2211%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%226%22%20y%3D%2211%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%227%22%20y%3D%2211%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%228%22%20y%3D%2211%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%223%22%20y%3D%2212%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%224%22%20y%3D%2212%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%225%22%20y%3D%2212%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%226%22%20y%3D%2212%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%233f9a3a%22/%3E%3Crect%20x%3D%224%22%20y%3D%2211%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%23d8f7a0%22/%3E%3Crect%20x%3D%225%22%20y%3D%2210%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%23d8f7a0%22/%3E%3Crect%20x%3D%226%22%20y%3D%229%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%23d8f7a0%22/%3E%3Crect%20x%3D%227%22%20y%3D%228%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%23d8f7a0%22/%3E%3Crect%20x%3D%228%22%20y%3D%227%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%23d8f7a0%22/%3E%3Crect%20x%3D%229%22%20y%3D%226%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%23d8f7a0%22/%3E%3Crect%20x%3D%2210%22%20y%3D%225%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%23d8f7a0%22/%3E%3Crect%20x%3D%2211%22%20y%3D%224%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%23d8f7a0%22/%3E%3Crect%20x%3D%2212%22%20y%3D%223%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%23d8f7a0%22/%3E%3Crect%20x%3D%222%22%20y%3D%2212%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%236b4a1f%22/%3E%3Crect%20x%3D%222%22%20y%3D%2213%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%236b4a1f%22/%3E%3Crect%20x%3D%221%22%20y%3D%2213%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%236b4a1f%22/%3E%3Crect%20x%3D%221%22%20y%3D%2214%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%236b4a1f%22/%3E%3Crect%20x%3D%220%22%20y%3D%2214%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%236b4a1f%22/%3E%3Crect%20x%3D%220%22%20y%3D%2215%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%236b4a1f%22/%3E%3C/svg%3E';
@@ -3010,8 +3010,8 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
 </script>
 <script>
 /* ===== Mỗi tab một đường dẫn riêng: #/on-tap, #/thi-thu, #/hoc-tu… (bấm Back/Forward của trình duyệt cũng chuyển tab) ===== */
-const ROUTES={learn:'on-tap',tips:'meo-thi',cramp:'hoc-tu',vocab:'hoc-tu-moi',exam:'thi-thu',stats:'thong-ke'};
-const ROUTE_TITLE={learn:'Ôn tập câu hỏi',tips:'Mẹo thi CCAR-P',cramp:'Học tủ',vocab:'Học từ mới',exam:'Thi thử',stats:'Thống kê'};
+const ROUTES={learn:'on-tap',tips:'meo-thi',cramp:'hoc-tu',ccao:'de-ccao',vocab:'hoc-tu-moi',exam:'thi-thu',stats:'thong-ke'};
+const ROUTE_TITLE={learn:'Ôn tập câu hỏi',tips:'Mẹo thi CCAR-P',cramp:'Học tủ',ccao:'Đề CCAO-F',vocab:'Học từ mới',exam:'Thi thử',stats:'Thống kê'};
 const viewFromHash=()=>{const h=decodeURIComponent(location.hash.replace(/^#\/?/,'')).split(/[/?]/)[0];return Object.keys(ROUTES).find(v=>ROUTES[v]===h)||null};
 let ROUTE_SYNC=false;
 (function(){const v=viewFromHash();if(v&&v!==UI.view){UI.view=v;try{save()}catch(e){}}})();
@@ -3102,5 +3102,62 @@ try{if(!localStorage.getItem('claude.study.atlas.aofirst.v1')){UI.bank='CCAO-F';
 {const _fk=filterBar;filterBar=function(){let h=_fk();if(UI.bank!=='CCAO-F')return h;const s=h.indexOf('<select id="poolSort">');if(s<0)return h;const e=h.indexOf('</select>',s);
  return h.slice(0,e)+`<option value="key" ${UI.sort==='key'?'selected':''}>✎ Theo key Học tủ</option>`+h.slice(e)}}
 </script>
+<script>
+/* ===== Tab "Đề CCAO-F": xem đề + đáp án đúng luôn (không cần làm bài) ===== */
+function aoCards(){
+ const dom=UI.aoDom||'all',byKey=UI.aoSort==='key',vi=!!UI.aoVI,only=!!UI.aoOnly;
+ let qs=Q.filter(q=>q.bank==='CCAO-F'&&(dom==='all'||q.category===dom));
+ const K=q=>(CRAMP_BY_ID[q.id]||{}).k||'';
+ qs.sort(byKey?(a,b)=>K(a).localeCompare(K(b),'en',{sensitivity:'base',numeric:true})||a.n-b.n:(a,b)=>a.n-b.n);
+ const card=q=>{const c=CRAMP_BY_ID[q.id],p=presentP(q.id),st=p.lastCorrect===true?'ok':p.lastCorrect===false?'no':'';
+  const opts=q.options.filter(o=>!only||q.answer.includes(o.k)).map(o=>{const ok=q.answer.includes(o.k);return `<div class="ao-opt ${ok?'ok':''}"><span class="letter">${o.k}</span><span>${esc(o.t.en||'')}${vi&&o.t.vi?`<span class="ao-vi">${esc(o.t.vi)}</span>`:''}</span>${ok?'<b class="ao-tick">✓</b>':''}</div>`}).join('');
+  const s=[q.n,q.stem.en,q.stem.vi||'',c?c.k+' '+c.a:'',...q.options.map(o=>o.t.en)].join(' ').toLowerCase();
+  return `<article class="ao-card" id="ao-${q.n}" data-s="${esc(s)}"><div class="ao-head"><button type="button" class="qchip ${st}" data-action="openQ" data-id="${esc(q.id)}" title="Mở câu này ở Ôn tập câu hỏi">#${String(q.n).padStart(3,'0')}</button>${pill(q.category||'')}${q.multi?pill('Chọn '+q.answer.length,'accent'):''}${forgetBtn(q)}${c?`<span class="ao-cram"><b>✎ ${esc(c.k)}</b> → ${crampAns(q,c)}</span>`:''}</div>
+  <div class="ao-stem">${esc(q.stem.en||'')}</div>${vi&&q.stem.vi?`<div class="ao-stem-vi">🇻🇳 ${esc(q.stem.vi)}</div>`:''}<div class="ao-opts">${opts}</div>${q.tip?`<div class="ao-tip">💡 ${esc(q.tip)}</div>`:''}</article>`};
+ if(byKey||dom!=='all')return `<div class="ao-list">${qs.map(card).join('')}</div>`;
+ return AO_DOMAINS.map(d=>{const l=qs.filter(q=>q.category===d.cat);return l.length?`<section class="tips-sec ao-sec" id="ao-sec-${d.cat}"><h2>${d.cat} · ${esc(d.name)} <small>${esc(d.vi)} · ${l.length} câu</small></h2><div class="ao-list">${l.map(card).join('')}</div></section>`:''}).join('');
+}
+function renderCcao(){
+ const dom=UI.aoDom||'all';
+ const side=`<div class="filters tips-toc ao-side">
+ <div class="select-group"><label for="aoDom">Chủ đề</label><select id="aoDom"><option value="all">Mọi chủ đề (119)</option>${AO_DOMAINS.map(d=>`<option value="${d.cat}" ${dom===d.cat?'selected':''}>${d.cat} · ${esc(d.vi)} (${Q.filter(q=>q.bank==='CCAO-F'&&q.category===d.cat).length})</option>`).join('')}</select></div>
+ <div class="select-group"><label for="aoSort">Sắp xếp</label><select id="aoSort"><option value="n">Thứ tự gốc</option><option value="key" ${UI.aoSort==='key'?'selected':''}>✎ Theo key Học tủ</option></select></div>
+ <input class="cr-search" id="aoSearch" type="search" placeholder="Tìm trong đề, đáp án, key…" autocomplete="off">
+ <label class="checkline"><input type="checkbox" id="aoVI" ${UI.aoVI?'checked':''}> Hiện tiếng Việt</label>
+ <label class="checkline"><input type="checkbox" id="aoOnly" ${UI.aoOnly?'checked':''}> Chỉ hiện đáp án đúng</label>
+ ${dom==='all'&&UI.aoSort!=='key'?`<div class="tips-toc-links">${AO_DOMAINS.map(d=>`<a href="#" data-tipgo="ao-sec-${d.cat}">${d.cat} · ${esc(d.vi)}</a>`).join('')}</div>`:''}
+ <p class="tiny" id="aoCount"></p></div>`;
+ return `<div class="learn-layout tips-layout"><aside class="learn-side">${side}</aside><div class="learn-main tips-main">${aoCards()}<p class="tiny tips-src">Đáp án đúng tô xanh. Bấm số câu để mở câu đó ở Ôn tập câu hỏi và tự làm lại.</p></div></div>`;
+}
+function aoCount(){const all=[...document.querySelectorAll('.ao-card')],vis=all.filter(c=>c.style.display!=='none').length,e=$('#aoCount');if(e)e.textContent=`Đang hiện ${vis} / ${all.length} câu`}
+{const _rm=renderMain;renderMain=function(){normView();if(UI.view==='ccao'){$('#content').innerHTML=renderCcao();aoCount();return}_rm()}}
+{const _r=render;render=function(){_r();if(UI.view==='ccao')document.body.classList.add('in-tips')}}
+document.addEventListener('change',e=>{const t=e.target;if(!t)return;
+ if(t.id==='aoDom'){UI.aoDom=t.value;save();render();window.scrollTo(0,0)}
+ else if(t.id==='aoSort'){UI.aoSort=t.value;save();render();window.scrollTo(0,0)}
+ else if(t.id==='aoVI'){UI.aoVI=t.checked;save();renderContentKeepScroll()}
+ else if(t.id==='aoOnly'){UI.aoOnly=t.checked;save();renderContentKeepScroll()}});
+document.addEventListener('input',e=>{if(e.target&&e.target.id==='aoSearch'){const v=e.target.value.trim().toLowerCase();
+ document.querySelectorAll('.ao-card').forEach(c=>c.style.display=!v||c.dataset.s.includes(v)?'':'none');
+ document.querySelectorAll('.ao-sec').forEach(s=>s.style.display=[...s.querySelectorAll('.ao-card')].some(c=>c.style.display!=='none')?'':'none');aoCount()}});
+</script>
+<style>
+.ao-list{display:grid;gap:12px}
+.ao-card{border:1px solid var(--stroke);background:var(--surface);border-radius:14px;padding:14px 16px}
+.ao-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px}
+.ao-cram{font-size:13px;color:var(--muted);margin-left:auto}
+.ao-cram b{color:var(--accent)}
+.ao-stem{font-size:15.5px;line-height:1.65;white-space:pre-line;color:var(--ink)}
+.ao-stem-vi{font-size:14px;line-height:1.6;color:var(--muted);margin-top:6px;white-space:pre-line}
+.ao-opts{display:grid;gap:6px;margin-top:10px}
+.ao-opt{display:flex;gap:10px;align-items:flex-start;padding:8px 11px;border:1px solid var(--stroke);border-radius:10px;font-size:14px;line-height:1.55;color:var(--muted)}
+.ao-opt .letter{flex:none;width:24px;height:24px;border-radius:7px;display:inline-grid;place-items:center;font-weight:800;font-size:12px;border:1px solid var(--stroke2)}
+.ao-opt.ok{color:var(--ink);border-color:color-mix(in srgb,var(--green) 70%,transparent);background:color-mix(in srgb,var(--green) 13%,var(--surface))}
+.ao-opt.ok .letter{background:var(--green);color:#06210f;border-color:var(--green)}
+.ao-tick{margin-left:auto;color:var(--green)}
+.ao-vi{display:block;font-size:13px;color:var(--soft);margin-top:3px}
+.ao-tip{margin-top:10px;font-size:13px;color:var(--muted);border-top:1px dashed var(--stroke);padding-top:8px}
+@media(max-width:760px){.ao-cram{margin-left:0;flex-basis:100%}.ao-stem{font-size:15px}}
+</style>
 </body>
 </html>
