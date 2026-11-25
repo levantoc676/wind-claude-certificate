@@ -664,7 +664,7 @@ body.in-tips .dock{display:none!important}
  .tip-a:before{content:"→ ";color:var(--green)}
 }
 /* ===== Học tủ (CCAR-P / CCAO-F) ===== */
-.cr-bank{margin-bottom:8px}.cr-bank small{font-weight:600;opacity:.75;margin-left:4px}
+.cr-bank{margin-bottom:8px}.lq-key{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;border:1px solid var(--accent);color:var(--accent);font-size:12.5px;font-weight:700;background:color-mix(in srgb,var(--accent) 10%,transparent)}.cr-bank small{font-weight:600;opacity:.75;margin-left:4px}
 .cr-search{width:100%;padding:9px 12px;border-radius:10px;border:1px solid var(--stroke2);background:var(--surface2);color:var(--ink);font:inherit;font-size:14px}
 .cr-table{border:1px solid var(--stroke);border-radius:12px;overflow:hidden;background:var(--surface)}
 .cr-row{display:grid;grid-template-columns:62px minmax(0,1fr) 22px minmax(0,1.25fr);align-items:center;gap:10px;padding:9px 14px;border-top:1px solid var(--stroke)}
@@ -964,6 +964,7 @@ function filtered(){
  let out=selectedPoolBase().filter(q=>(UI.topic==='all'||categoryOf(q)===UI.topic)&&matchesStatus(q)&&(
  !query||fold([q.bank,q.categoryName||'',q.topicName,...Object.values(q.stem),...q.options.flatMap(o=>Object.values(o.t)),q.explain.key||q.explain.text||'',q.id].join(' ')).includes(query)));
  if(UI.sort==='reverse')out.reverse();
+ if(UI.sort==='key'&&typeof CRAMP_BY_ID!=='undefined'){const K=q=>CRAMP_BY_ID[q.id]&&q.bank==='CCAO-F'?CRAMP_BY_ID[q.id].k:null;out.sort((a,b)=>{const x=K(a),y=K(b);if(x&&y)return x.localeCompare(y,'en',{sensitivity:'base',numeric:true})||a.n-b.n;if(x||y)return x?-1:1;return 0})}
  if(UI.sort==='weak')out.sort((a,b)=>Number(!!presentP(b.id).review||presentP(b.id).lastCorrect===false)-Number(!!presentP(a.id).review||presentP(a.id).lastCorrect===false)||presentP(a.id).attempts-presentP(b.id).attempts);
  if(UI.sort==='random'){const hash=id=>{let h=2166136261;for(let i=0;i<id.length;i++)h=Math.imul(h^id.charCodeAt(i),16777619);return(h^(UI.randomSeed||0))>>>0};out.sort((a,b)=>hash(a.id)-hash(b.id));}
  return out;
@@ -1159,7 +1160,7 @@ document.addEventListener('change',e=>{
  case'poolBank':setBank(v);break;
  case'poolTopic':UI.topic=v;UI.page=1;UI.flashIndex=0;save();render();break;
  case'poolStatus':UI.status=v;UI.page=1;UI.flashIndex=0;save();render();break;
- case'poolSort':UI.sort=v;if(v==='random')UI.randomSeed=Math.floor(Math.random()*2**30);UI.page=1;UI.flashIndex=0;save();render();break;
+ case'poolSort':UI.sort=v;if(v==='random')UI.randomSeed=Math.floor(Math.random()*2**30);UI.page=1;UI.flashIndex=0;if(v==='key')UI.learnId=null;save();render();break;
  case'langSelect':UI.lang=v;save();render();break;
  case'examCount':UI.count=clamp(v,1,Math.max(examCandidates().length,1));save();render();break;
  case'examMinutes':UI.minutes=Number(v);save();render();break;
@@ -1981,7 +1982,7 @@ function renderLearn(){
  const res=ck?`<div class="lq-res ${st.ok?'ok':'no'}">${st.ok?'✓ <b>Chính xác!</b>':`✕ <b>Chưa đúng.</b> Đáp án đúng: <b>${q.answer.join(', ')}</b>.`}${q.tip?`<div style="margin-top:6px">🎯 ${see?`<b>Thấy</b> ${esc(see)} → `:''}${esc(act)}</div>`:''}</div>${exText?`<details class="lq-exp" ${st.ok?'':'open'}><summary>Giải thích chi tiết</summary><p>${exText}</p>${ex.elim&&ex.elim.length?`<ul>${ex.elim.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}</details>`:''}`:'';
  const kp=tipPanel(q,ck);
  return head+filterBar()+`<div class="learn-wrap${kp?'':' nopanel'}"><div class="learn ${skin}"><div class="lq-top">${starToolsHTML()}${UI.kpanel===false?'<button class="btn mini" data-action="kpanelToggle">🎯 Hiện mẹo chọn đáp án</button>':''}<span class="mini-count">Câu <b>${i+1}</b> / ${list.length} · ${p.attempts?`đã làm ${p.attempts} lần`:'chưa làm'}</span></div>${hudHTML()}
- <article class="lq-card" data-question="${esc(q.id)}"><div class="lq-head"><span class="q-number">#${String(q.n).padStart(3,'0')}</span>${pill(q.bank)}${pill(domainLabel(q))}${q.multi?pill('Chọn '+q.answer.length+' đáp án','accent'):''}<div class="q-actions">${forgetBtn(q)}<button class="roundact star ${p.star?'on':''}" data-action="star" data-id="${esc(q.id)}" title="Đánh dấu">${p.star?'★':'☆'}</button><button class="roundact" data-action="copyOne" data-id="${esc(q.id)}" title="Copy câu này để hỏi AI">⧉ Copy</button></div></div>
+ <article class="lq-card" data-question="${esc(q.id)}"><div class="lq-head"><span class="q-number">#${String(q.n).padStart(3,'0')}</span>${pill(q.bank)}${pill(domainLabel(q))}${q.multi?pill('Chọn '+q.answer.length+' đáp án','accent'):''}${UI.sort==='key'&&q.bank==='CCAO-F'&&typeof CRAMP_BY_ID!=='undefined'&&CRAMP_BY_ID[q.id]?`<span class="lq-key" title="Key Học tủ">✎ ${esc(CRAMP_BY_ID[q.id].k)}</span>`:''}<div class="q-actions">${forgetBtn(q)}<button class="roundact star ${p.star?'on':''}" data-action="star" data-id="${esc(q.id)}" title="Đánh dấu">${p.star?'★':'☆'}</button><button class="roundact" data-action="copyOne" data-id="${esc(q.id)}" title="Copy câu này để hỏi AI">⧉ Copy</button></div></div>
  <div class="lq-body"><div class="lq-stem">${wrapWords(q.stem.en||'')}</div>${showVI&&q.stem.vi?`<div class="lq-vi">🇻🇳 ${esc(q.stem.vi)}</div>`:''}<div class="lq-opts">${opts}</div>${res}</div>
  <div class="lq-bar"><button class="btn mini" data-action="learnNav" data-d="-1" ${i<=0?'disabled':''}>← Câu trước</button>${!ck&&q.multi?`<button class="btn primary mini" data-action="learnCheck" ${st.picks.length?'':'disabled'}>Chấm đáp án</button>`:''}${ck?`<button class="btn mini" data-action="learnRetry">↺ Làm lại</button>`:''}<button class="btn mini" data-action="learnVI">${UI.learnVI?'Ẩn bản dịch':'🇻🇳 Hiện bản dịch'}</button><span class="sp"></span><button class="btn ${ck?'primary':''} mini" data-action="learnNav" data-d="1" ${i>=list.length-1?'disabled':''}>Câu tiếp →</button></div></article>
  <p class="lq-hint"><span class="kbd">A</span>–<span class="kbd">${q.options[q.options.length-1].k}</span> chọn · <span class="kbd">Enter</span> ${q.multi?'chấm / ':''}câu tiếp · <span class="kbd">←</span><span class="kbd">→</span> chuyển câu · <span class="kbd">V</span> bản dịch · chạm/bấm vào từ để ghim nghĩa · từ gạch chân cam = từ đã lưu</p>
@@ -3094,6 +3095,12 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
 <script>
 /* 25/11/2026: đang ôn CCAO-F → chọn sẵn bộ CCAO-F một lần (sau đó đổi tự do) */
 try{if(!localStorage.getItem('claude.study.atlas.aofirst.v1')){UI.bank='CCAO-F';UI.topic='all';UI.examTopics=[];UI.crBank='CCAO-F';UI.page=1;UI.learnId=null;save();render();localStorage.setItem('claude.study.atlas.aofirst.v1','1')}}catch(e){}
+</script>
+<script>
+/* ===== Riêng CCAO-F: Sắp xếp "Theo key Học tủ (A–Z)" — câu có key giống nhau nằm cạnh nhau ===== */
+{const _rk=render;render=function(){if(UI.sort==='key'&&UI.bank!=='CCAO-F')UI.sort='original';return _rk.apply(this,arguments)}}
+{const _fk=filterBar;filterBar=function(){let h=_fk();if(UI.bank!=='CCAO-F')return h;const s=h.indexOf('<select id="poolSort">');if(s<0)return h;const e=h.indexOf('</select>',s);
+ return h.slice(0,e)+`<option value="key" ${UI.sort==='key'?'selected':''}>✎ Theo key Học tủ</option>`+h.slice(e)}}
 </script>
 </body>
 </html>

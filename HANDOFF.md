@@ -23,6 +23,7 @@ Cập nhật: 23/11/2026
 - `id="wcc-tips"`: tab Mẹo thi CCAR-P. Có 146 mẹo chia theo D1–D7, mỗi mẹo kèm số câu liên quan.
 - `id="wcc-cramo"`: **Học tủ CCAO-F** (25/11), cùng dạng với `wcc-cramp`. Tab Học tủ có nút chọn bộ CCAR-P / CCAO-F (`UI.crBank`, ngữ cảnh `crCtx()` / biến `CX`). Mục Yes/No và 💡 Kinh nghiệm chỉ có ở CCAR-P.
 - **Người dùng đang ôn CCAO-F** (25/11): CCAO-F đứng đầu mọi danh sách bộ học (sắp lại `META.banks` lúc chạy), Học tủ mặc định CCAO-F, và một lần duy nhất chọn sẵn Bộ học = CCAO-F (cờ `claude.study.atlas.aofirst.v1`).
+- **Sắp xếp "✎ Theo key Học tủ"** (`UI.sort='key'`): chỉ hiện khi Bộ học = CCAO-F; xếp câu theo key Học tủ A–Z để câu cùng nhóm key nằm cạnh nhau, thẻ câu ở Ôn tập hiện nhãn key (`.lq-key`). Chọn bộ khác thì tự về Thứ tự gốc.
 - CCAO-F chia 7 domain **AO1–AO7 = D1–D7** theo exam guide CCAO-F (Claude tự phân loại, xem Lần 12 trong DONG-BO-DU-LIEU.md).
 - `id="wcc-cramp"`: **Học tủ CCAR-P**. Dạng `{ "<số câu>": { "k": "key trong đề", "a": "đáp án tủ" } }`.
   - Key dạng nhóm viết `phần1 | phần2`, ví dụ `BEFORE running | selecting a model`, `guardrail | tactics`, `HTTP | data-exfiltration`, `Trenova Systems | p95`, `Diligence | actions`.
