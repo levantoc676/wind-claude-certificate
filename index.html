@@ -801,6 +801,13 @@ details.cr-fold>summary h3{margin:0}
 .result-panel #wrongCheck{margin-top:22px;max-width:none}
 .result-panel #wrongCheck>.xf-fold{background:transparent;border:0;border-top:1px solid var(--stroke);border-radius:0;padding:16px 0 0}
 .result-panel #wrongCheck>p.muted{margin:0}
+/* Mục lục Câu sai luôn cố định khi cuộn */
+.result-panel{overflow:clip}
+.result-panel .xr-2col>.exam-nav{position:sticky;top:var(--stick,96px);z-index:20}
+@media(max-width:900px){.result-panel .xr-2col>.exam-nav{position:sticky!important;top:var(--stick,64px)!important;max-height:30vh!important;overflow:auto;padding:10px 12px;box-shadow:0 8px 20px rgba(0,0,0,.35)}
+ .result-panel .xr-2col>.exam-nav .sectiontop{margin-bottom:6px}
+ .result-panel .xr-card{scroll-margin-top:calc(var(--stick,64px) + 30vh + 12px)!important}}
+.result-panel .xr-card{scroll-margin-top:calc(var(--stick,96px) + 12px)}
 .cr-xl{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--stroke);border-radius:12px;overflow:hidden;font-size:15px}
 .cr-xl th,.cr-xl td{border:1px solid var(--stroke);padding:8px 12px;text-align:left;vertical-align:middle}
 .cr-xl thead th{background:var(--surface2);font-size:12.5px;color:var(--muted);font-weight:800}
