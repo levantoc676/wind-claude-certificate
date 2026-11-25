@@ -53,7 +53,9 @@ Cập nhật: 23/11/2026
   - Lịch sử chọn vẫn lưu theo mã gốc.
   - Code nằm trong khối `SH` / `shApply`.
 - **Thi thử:**
-  - Chọn được nhiều chủ đề (`UI.examTopics`).
+  - Chọn được nhiều chủ đề (`UI.examTopics`). Từ 25/11 ô chọn nhiều chủ đề nằm ngay trong bộ lọc, thay ô "Chủ đề" (`examTopicPicker`, dạng dropdown có checkbox); chưa chọn = mọi chủ đề (bỏ qua `UI.topic`).
+  - Trạng thái trong Thi thử chỉ còn: Tất cả, 🧠 Hay quên, Chưa học, Đã đánh dấu (`EX_STATUS`). Trạng thái khác (vd. Cần ôn lại) tự về Tất cả khi mở tab Thi thử. Các tab khác giữ đủ lựa chọn.
+  - Nút 🔀 Ngẫu nhiên: full-width chỉ ở cột lọc dọc (`.learn-side`), bộ lọc ngang thì nằm cạnh ô Sắp xếp.
   - Trên điện thoại có nút nổi "☰ Chọn câu khác" khi xem lại bài.
 - **Panel Mẹo** ở Ôn tập, theo thứ tự: Học tủ (đóng khung, lên đầu), mẹo câu này, Dịch ngắn gọn, Mẹo cùng chủ đề (thu gọn), Mẹo thi CCAR-P liên quan.
 - **Thanh bên trái** thu gọn và mở rộng được. Đã bỏ mục "Ngân hàng câu hỏi" (giữ `#bankNav` ẩn để JS không lỗi; chọn bộ đề bằng bộ lọc).
