@@ -749,7 +749,9 @@ details.tp-fold .tp-list{margin-top:10px}
 .ex-topics{border:1px solid var(--stroke);border-radius:12px;padding:12px 14px;margin:14px 0;background:var(--surface)}
 .ex-topics-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
 .ex-topics-head .sp{flex:1}
-.ex-topics-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px}
+.ex-topics-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr));gap:6px}
+.ex-topic{min-width:0}.ex-topic span{min-width:0;overflow-wrap:anywhere}.xt-pop{max-width:calc(100vw - 32px)}
+.learn-side{overflow-x:hidden}.learn-side .xt-pick,.learn-side .xt-pop,.learn-side .ex-topics-list{min-width:0;max-width:100%}
 .ex-topic{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--stroke2);border-radius:9px;cursor:pointer;font-size:14px}
 .ex-topic small{margin-left:auto;font-family:var(--mono);color:var(--soft)}
 .ex-topic.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
