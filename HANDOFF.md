@@ -15,7 +15,7 @@ Cập nhật: 23/11/2026
 - **Ôn tập: checkbox "Hiện đáp án đúng luôn"** (`UI.showAns`, 25/11): tô xanh đáp án đúng và mở sẵn panel Mẹo / Học tủ; khi bật thì bấm phương án không chấm, không ghi tiến độ. Thay cho tab "Đề CCAO-F" đã thử rồi bỏ.
 - **Tab Flashcards đã bỏ** (25/11): gỡ khỏi `VIEWS_ON`, thanh bên và `ROUTES`; mở `#/flashcards` sẽ về Ôn tập. Code render flashcard vẫn còn trong file nhưng không dùng.
 - Link artifact (https://claude.ai/artifact/1q3qpVrDmcKmeab5eSmgWb) đang **cũ hơn repo nhiều**. Chỉ cập nhật được từ một chat mở ở chính trang artifact đó.
-- Nhật ký đồng bộ dữ liệu: `DONG-BO-DU-LIEU.md` (trong repo, đã chép vào Project ở `claude/dong-bo-du-lieu.md`). Hiện tới **Lần 12**.
+- Nhật ký đồng bộ dữ liệu: `DONG-BO-DU-LIEU.md` (trong repo, đã chép vào Project ở `claude/dong-bo-du-lieu.md`). Hiện tới **Lần 13**.
 
 ## Dữ liệu (nằm trong index.html)
 - `<script type="application/json" id="wcc-data">`: **489 câu**.
@@ -55,6 +55,7 @@ Cập nhật: 23/11/2026
 - **Chế độ Ngẫu nhiên** (chọn trong Sắp xếp, hoặc nút 🔀 trong bộ lọc):
   - Trộn câu và trộn phương án; chữ cái A–E được gán lại theo vị trí mới.
   - Đảo thứ tự (1)…(n) trong 7 câu: #017, #020, #022, #023, #037, #049, #112.
+  - Từ 26/11 đảo thêm 13 câu xếp thứ tự CCAO-F (đề có (1)…(5), đáp án là dãy số): `SH.yn` có cờ `seq`, dùng `seqStem` / `seqNums`; đáp án Học tủ lấy từ `crOf(q)` (CRAMO cho CCAO-F, CRAMP cho CCAR-P).
   - Lịch sử chọn vẫn lưu theo mã gốc.
   - Code nằm trong khối `SH` / `shApply`.
 - **Thi thử:**

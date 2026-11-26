@@ -191,3 +191,15 @@ Mã chủ đề AP của bộ CCAR-P (AP = **A**rchitect **P**rofessional) trư�
   - Key đề được kiểm tra tự động: có trong đề và chỉ có ở đúng câu đó trong bộ CCAO-F. Nhóm key: `correct order | …` (câu xếp thứ tự), `BEFORE … | …`, `first | …`, `Description | …`, `Delegation | …`.
   - Đáp án tủ được kiểm tra tự động: khớp đáp án đúng và không là phần đầu của đáp án sai. Câu xếp thứ tự ghi đúng dãy số (vd `5, 4, 1, 3, 2`). Riêng #001 ghi theo ý (mọi phương án đều mở đầu bằng "Name Claude's role", đáp án đúng là phương án đủ cả 3 ý).
 - **Bổ sung (25/11):** 13 câu xếp thứ tự của Học tủ CCAO-F ghi thêm chữ đầu của từng bước theo đúng thứ tự đáp án, ví dụ `5, 4, 1, 3, 2 (Read, Identify, Cross-check, Document, Decide)`. Nếu trong một câu có hai bước cùng chữ đầu thì ghi thêm chữ kế tiếp (vd `Identify audience`, `Identify data`).
+
+## Lần 13: 26/11/2026, đảo thứ tự các bước ở câu xếp thứ tự CCAO-F
+
+- Áp dụng cho 13 câu CCAO-F có các bước (1)…(5) và đáp án là dãy số: #003, #009, #017, #026, #030, #034, #041, #045, #059, #060, #075, #078, #100.
+- **Khi nào đảo:** giống Lần 9–11, tức là khi chọn *Sắp xếp: Ngẫu nhiên* hoặc bấm 🔀 ở Ôn tập câu hỏi, và trong mỗi lượt Thi thử.
+- **Những gì đổi theo:**
+  - Số thứ tự các bước trong đề, cả tiếng Anh lẫn tiếng Việt.
+  - Dãy số trong mọi phương án.
+  - Dãy số trong mẹo chọn đáp án và trong đáp án Học tủ. Chữ đầu trong ngoặc giữ nguyên vì vẫn đúng thứ tự làm.
+  - Phần giải thích có thêm dòng "Thứ tự các bước đã đảo: (1) = gốc (3)…", nội dung giải thích vẫn viết theo thứ tự gốc.
+- **Những gì giữ nguyên:** mã phương án, đáp án đúng và tiến độ học. Bỏ chế độ Ngẫu nhiên thì đề về như cũ.
+- Đã kiểm tra bằng máy cả 13 câu: đọc đáp án mới theo đề mới ra đúng trình tự các bước như đáp án gốc, ở cả tiếng Anh và tiếng Việt.

@@ -2930,6 +2930,8 @@ const YN={get list(){return SH.yn},get seed(){return SH.seed}};
   q.options.forEach(o=>{o._k=o.k;o._t={...o.t}});
   const ts=q.options.map(o=>String(o.t.en||'').trim());
   const yn=ts.every(t=>/^(Yes|No)(\s*-\s*(Yes|No))+$/.test(t)),mt=!yn&&ts.every(t=>t.includes(' · ')&&t.split(' · ').length===ts[0].split(' · ').length);
+  const sq=!yn&&!mt&&ts.length>1&&ts.every(t=>/^\d(\s*,\s*\d)+$/.test(t));
+  if(sq&&/\(1\)/.test(q.stem.en||'')){SH.yn.push({q,yn:false,seq:true,N:ts[0].split(',').length,stem:{...q.stem},tip:q.tip,ck:null});continue}
   if((!yn&&!mt)||!/\(1\)/.test(q.stem.en||''))continue; /* đề không đánh số các mục thì không đảo được */
   SH.yn.push({q,yn,N:yn?ts[0].split('-').length:ts[0].split(' · ').length,stem:{...q.stem},ck:null});
  }
@@ -2955,11 +2957,18 @@ function ynStem(t,np){
  return P.pre+body+(P.endDot||'')+(note?(P.semiStyle?'; ':' ')+note:'')+P.tail;
 }
 function ynPat(t,np,yn=true){const a=String(t).split(yn?/\s*-\s*/:/\s*·\s*/),o=new Array(a.length);a.forEach((v,i)=>o[np[i+1]-1]=v);return o.join(yn?' - ':' · ')}
+/* Câu xếp thứ tự (CCAO-F): đề có các bước (1)…(n) cách nhau bằng dòng trống, đáp án là dãy số "5, 4, 1, 3, 2" */
+function seqStem(t,np){const ms=[...String(t).matchAll(/\((\d)\)\s*/g)];if(!ms.length)return t;
+ const pre=t.slice(0,ms[0].index),items=ms.map((m,i)=>({n:+m[1],txt:t.slice(m.index+m[0].length,i+1<ms.length?ms[i+1].index:t.length).trim()}));
+ const sep=/\n\s*\n/.test(t.slice(ms[0].index))?'\n\n':(/\n/.test(t.slice(ms[0].index))?'\n':' ');
+ return pre+items.sort((a,b)=>np[a.n]-np[b.n]).map(x=>`(${np[x.n]}) ${x.txt}`).join(sep)}
+const seqNums=(t,np)=>String(t).replace(/\b[1-9](?:\s*(?:,|→)\s*[1-9])+\b/g,m=>m.replace(/[1-9]/g,d=>np[+d]||d));
+const crOf=q=>q.bank==='CCAO-F'?(typeof CRAMO!=='undefined'?CRAMO:null):q.bank==='CCAR-P'?(typeof CRAMP!=='undefined'?CRAMP:null):null;
 function ynRand(str){let h=2166136261;for(let i=0;i<str.length;i++)h=Math.imul(h^str.charCodeAt(i),16777619);return()=>{h^=h<<13;h^=h>>>17;h^=h<<5;return((h>>>0)%1e6)/1e6}}
 function shRestore(){
  for(const q of Q){const O=SH.orig.get(q.id);q.options=O.opts.slice();q.options.forEach(o=>{o.k=o._k;o.t={...o._t}});q.answer=O.answer.slice();q.stem={...O.stem};
   if(O.ex&&q.explain){q.explain.text=O.ex.text;q.explain.key=O.ex.key;q.explain.elim=O.ex.elim?O.ex.elim.slice():O.ex.elim}}
- for(const x of SH.yn){const c=typeof CRAMP!=='undefined'?CRAMP[x.q.n]:null;if(c&&x.ck){c.k=x.ck.k;c.a=x.ck.a}x.np=null}
+ for(const x of SH.yn){const C=crOf(x.q),c=C?C[x.q.n]:null;if(c&&x.ck){c.k=x.ck.k;c.a=x.ck.a}if(x.seq)x.q.tip=x.tip;x.np=null}
  SH.inv={};
 }
 function shApply(){
@@ -2972,17 +2981,19 @@ function shApply(){
  if(typeof DRAFTS!=='undefined'){DRAFTS={};REVEALED={}}
  /* 1) đảo thứ tự mục (1)…(n) */
  if(seedYN)for(const x of SH.yn){
-  const q=x.q,c=typeof CRAMP!=='undefined'?CRAMP[q.n]:null;
-  if(c&&q.bank==='CCAR-P'&&!x.ck)x.ck={k:c.k,a:c.a};
+  const q=x.q,C=crOf(q),c=C?C[q.n]:null;
+  if(c&&!x.ck)x.ck={k:c.k,a:c.a};
   const R=ynRand(seedYN+'|'+q.id);let arr;
   do{arr=[...Array(x.N).keys()].map(i=>i+1);for(let i=arr.length-1;i>0;i--){const j=Math.floor(R()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}}while(arr.every((v,i)=>v===i+1)||(x.known||(x.known=ynParse(x.stem.en).items.map(t=>t.n))).every(k=>arr[k-1]===k));
   const np={};arr.forEach((oldN,newIdx)=>np[oldN]=newIdx+1);x.np=np;
-  for(const L of Object.keys(q.stem))if(L!=='jp')q.stem[L]=ynStem(x.stem[L],np);
-  q.options.forEach(o=>{for(const L of Object.keys(o.t))o.t[L]=ynPat(o._t[L],np,x.yn)});
+  for(const L of Object.keys(q.stem))if(L!=='jp')q.stem[L]=x.seq?seqStem(x.stem[L],np):ynStem(x.stem[L],np);
+  q.options.forEach(o=>{for(const L of Object.keys(o.t))o.t[L]=x.seq?String(o._t[L]).replace(/\d/g,d=>np[+d]||d):ynPat(o._t[L],np,x.yn)});
+  if(x.seq&&x.tip)q.tip=seqNums(x.tip,np);
   const O=SH.orig.get(q.id);
-  if(q.explain&&O.ex&&O.ex.text!=null){const map=Object.keys(np).sort((a,b)=>np[a]-np[b]).map(o=>`(${np[o]}) = gốc (${o})`).join(', ');
-   q.explain.text=`🔀 <b>Thứ tự ${x.yn?'nhận định':'các mục'} đã đảo:</b> ${map}. Giải thích bên dưới viết theo thứ tự gốc.<br><br>`+O.ex.text}
-  if(c&&x.ck){if(!x.yn){const sep=(x.ck.a.match(/\s[–·]\s/)||[' · '])[0],pa=x.ck.a.split(/\s*[–·]\s*/);if(pa.length===x.N){const o=new Array(x.N);pa.forEach((v,i)=>o[np[i+1]-1]=v);c.a=o.join(sep)}}
+  if(q.explain&&O.ex&&(O.ex.text!=null||(x.seq&&O.ex.key!=null))){const F=O.ex.text!=null?'text':'key';const map=Object.keys(np).sort((a,b)=>np[a]-np[b]).map(o=>`(${np[o]}) = gốc (${o})`).join(', ');
+   q.explain[F]=`🔀 <b>Thứ tự ${x.yn?'nhận định':x.seq?'các bước':'các mục'} đã đảo:</b> ${map}. Giải thích bên dưới viết theo thứ tự gốc.<br><br>`+O.ex[F]}
+  if(c&&x.ck&&x.seq){c.a=x.ck.a.replace(/^[\d,\s]+/,m=>m.replace(/\d/g,d=>np[+d]||d))}
+  else if(c&&x.ck){if(!x.yn){const sep=(x.ck.a.match(/\s[–·]\s/)||[' · '])[0],pa=x.ck.a.split(/\s*[–·]\s*/);if(pa.length===x.N){const o=new Array(x.N);pa.forEach((v,i)=>o[np[i+1]-1]=v);c.a=o.join(sep)}}
    c.k=/claim/i.test(x.ck.k)?ynNums(x.ck.k,np):x.ck.k}
  }
  /* 2) trộn phương án, gán lại chữ cái theo vị trí */
