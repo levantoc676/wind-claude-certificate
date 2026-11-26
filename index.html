@@ -1065,7 +1065,7 @@ function examCandidates(){return filtered().filter(q=>UI.includeDisputed||!q.qui
 function startExam(){
  const pool=examCandidates();if(!pool.length){toast('Không có câu hỏi phù hợp. Hãy thay đổi bộ lọc.');return}
  const n=clamp(UI.count,1,pool.length);
- EXAM={ids:shuffled(pool).slice(0,n).map(q=>q.id),index:0,answers:{},flags:{},started:Date.now(),minutes:Number(UI.minutes),bank:UI.bank,topic:UI.topic,includeDisputed:UI.includeDisputed,done:false,result:null};EXAM.order={};for(const id of EXAM.ids)EXAM.order[id]=shuffled(INDEX[id].options.map(o=>o.k));
+ EXAM={ids:shuffled(pool).slice(0,n).map(q=>q.id),index:0,answers:{},flags:{},started:Date.now(),minutes:Number(UI.minutes),bank:UI.bank,topic:UI.topic,includeDisputed:UI.includeDisputed,done:false,result:null};EXAM.order={};EXAM.inner=UI.examOrder==='original'?'original':'random';if(EXAM.inner==='random')for(const id of EXAM.ids)EXAM.order[id]=shuffled(INDEX[id].options.map(o=>o.k));
  save();render();window.scrollTo({top:0,behavior:'instant'});
 }
 function examRemaining(){return EXAM?.minutes?Math.max(0,EXAM.minutes*60000-(Date.now()-EXAM.started)):null}
@@ -2974,7 +2974,7 @@ function shRestore(){
 function shApply(){
  const inExam=UI.view==='exam'&&typeof EXAM!=='undefined'&&EXAM&&EXAM.started;
  const rnd=UI.sort==='random'?'r'+(UI.randomSeed||0):null;
- const seedYN=inExam?'ex'+EXAM.started:rnd,seedOpt=inExam?null:rnd;
+ const seedYN=inExam?(EXAM.inner==='original'?null:'ex'+EXAM.started):rnd,seedOpt=inExam?null:rnd;
  const key=seedYN+'|'+seedOpt;if(key===SH.seed)return;SH.seed=key;
  shRestore();
  if(typeof LR!=='undefined')for(const k of Object.keys(LR))delete LR[k];
@@ -3114,6 +3114,14 @@ try{if(!localStorage.getItem('claude.study.atlas.aofirst.v1')){UI.bank='CCAO-F';
 {const _rk=render;render=function(){if(UI.sort==='key'&&UI.bank!=='CCAO-F')UI.sort='original';return _rk.apply(this,arguments)}}
 {const _fk=filterBar;filterBar=function(){let h=_fk();if(UI.bank!=='CCAO-F')return h;const s=h.indexOf('<select id="poolSort">');if(s<0)return h;const e=h.indexOf('</select>',s);
  return h.slice(0,e)+`<option value="key" ${UI.sort==='key'?'selected':''}>✎ Theo key Học tủ</option>`+h.slice(e)}}
+/* Thi thử: thứ tự câu luôn trộn; ô Sắp xếp chỉ chọn thứ tự BÊN TRONG mỗi câu (phương án, bước (1)…(n)) */
+{const _fx=filterBar;filterBar=function(){let h=_fx();if(UI.view!=='exam')return h;
+ if(UI.examOrder!=='original'&&UI.examOrder!=='random')UI.examOrder='random';
+ h=h.replace(/<button type="button" class="btn mini shuffle-btn[^>]*>[\s\S]*?<\/button>/,'');
+ const a=h.indexOf('<div class="select-group"><label for="poolSort">');if(a<0)return h;const e=h.indexOf('</div>',h.indexOf('</select>',a))+6;
+ const sel=`<div class="select-group" title="Thứ tự các câu trong đề luôn được trộn. Ô này chọn thứ tự phương án và các bước (1)…(n) trong từng câu."><label for="examOrder">Sắp xếp trong câu</label><select id="examOrder"><option value="original" ${UI.examOrder==='original'?'selected':''}>Thứ tự gốc</option><option value="random" ${UI.examOrder==='random'?'selected':''}>Ngẫu nhiên</option></select></div>`;
+ return h.slice(0,a)+sel+h.slice(e)}}
+document.addEventListener('change',e=>{if(e.target&&e.target.id==='examOrder'){UI.examOrder=e.target.value==='original'?'original':'random';save();renderContentKeepScroll()}});
 </script>
 <script>
 /* ===== Ôn tập: checkbox "Hiện đáp án đúng luôn" (thay cho tab Đề CCAO-F) ===== */
