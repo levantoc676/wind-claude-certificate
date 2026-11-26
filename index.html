@@ -2842,15 +2842,27 @@ function renderCramp(){
  const bankSw=`<div class="cr-mode cr-bank" role="group" aria-label="Bộ đề"><button type="button" data-crbank="CCAO-F" class="${isP?'':'on'}">CCAO-F <small>${Object.keys(CRAMO).length} câu</small></button><button type="button" data-crbank="CCAR-P" class="${isP?'on':''}">CCAR-P <small>${Object.keys(CRAMP).length} câu</small></button></div>`;
  const modeSw=bankSw+`<div class="cr-mode" role="group" aria-label="Cách xếp"><button type="button" data-crmode="ap" class="${byKey||UI.crMode==='sure'?'':'on'}">Theo chủ đề ${CX.pre}</button><button type="button" data-crmode="key" class="${byKey?'on':''}">Theo key đề bài</button><button type="button" data-crmode="sure" class="cr-mode-wide ${UI.crMode==='sure'?'on':''}">Chữ đầu chắc đúng / chắc sai</button></div>`;
  const toc=`<div class="filters tips-toc">${modeSw}<input class="cr-search" id="crSearch" type="search" placeholder="Tìm key trong đề…" autocomplete="off">
- <div class="tips-toc-links ${byKey?'cr-letters':''}">${isP?'<a href="#" data-tipgo="cr-yn">Mẹo câu Yes / No</a>':''}${byKey?groups.map(g=>`<a href="#" data-tipgo="cr-L-${g.L}">${g.L}</a>`).join(''):doms.map(({d,qs})=>`<a href="#" data-tipgo="cr-${d.cat}">${d.cat} · ${esc(d.vi)}<small>${qs.length} câu</small></a>`).join('')}</div>
+ <div class="tips-toc-links ${byKey?'cr-letters':''}">${isP?'<a href="#" data-tipgo="cr-yn">Mẹo câu Yes / No</a>':'<a href="#" data-tipgo="cr-seq">🔢 Câu xếp thứ tự</a>'}${byKey?groups.map(g=>`<a href="#" data-tipgo="cr-L-${g.L}">${g.L}</a>`).join(''):doms.map(({d,qs})=>`<a href="#" data-tipgo="cr-${d.cat}">${d.cat} · ${esc(d.vi)}<small>${qs.length} câu</small></a>`).join('')}</div>
  <label class="checkline"><input type="checkbox" id="crQuiz" ${UI.crQuiz?'checked':''}> Tự kiểm tra: che đáp án</label></div>`;
  const row=q=>{const c=CX.cram[q.n];if(!c)return '';const p=presentP(q.id),st=p.lastCorrect===true?'ok':p.lastCorrect===false?'no':'';
   return `<div class="cr-row" data-s="${esc((c.k+' '+c.a+' '+q.n).toLowerCase())}"><button type="button" class="qchip ${st}" data-action="openQ" data-id="${esc(q.id)}">#${String(q.n).padStart(3,'0')}</button><div class="cr-k">${esc(c.k)}</div><div class="cr-arrow">→</div><div class="cr-a ${UI.crQuiz?'veil':''}">${crampAns(q,c)}</div></div>`};
- const main=(isP?`<section class="tips-sec" id="cr-yn"><h2>Mẹo câu Yes / No</h2>${tt(crampYesNo())}</section>`:'')
+ const main=(isP?`<section class="tips-sec" id="cr-yn"><h2>Mẹo câu Yes / No</h2>${tt(crampYesNo())}</section>`:crampSeqRule())
   +(byKey?`<p class="tiny cr-keynote">Xếp theo chữ cái của key trong đề, không chia theo ${CX.pre}: các câu có key giống nhau (vd “BEFORE running | …”) nằm cạnh nhau.</p>`+groups.map(g=>`<section class="tips-sec cr-sec" id="cr-L-${g.L}"><h2>${g.L} <small>${g.qs.length} câu</small></h2><div class="cr-table">${g.qs.map(row).join('')}</div></section>`).join(''):'')
   +(byKey?'':doms.map(({d,qs})=>`<section class="tips-sec cr-sec" id="cr-${d.cat}"><h2>${d.cat} · ${esc(d.name)} <small>${esc(d.vi)} · ${qs.length} câu</small></h2><div class="cr-table">${qs.map(row).join('')}</div></section>`).join(''))
   +`<p class="tiny tips-src">Key trong đề: cụm từ chỉ có ở câu đó. Đáp án: chữ đầu của đáp án đúng, hoặc cụm từ chỉ có ở đáp án đúng. Bấm số câu để mở câu trong Ôn tập câu hỏi.</p>`;
  return `<div class="learn-layout tips-layout"><aside class="learn-side">${toc}</aside><div class="learn-main tips-main">${main}</div></div>`;
+}
+/* Học tủ CCAO-F: quy tắc chọn cặp bước 2 → 3 ở câu xếp thứ tự */
+function crampSeqRule(){
+ const ch=ns=>ns.map(n=>{const q=AO_BY_N[n];if(!q)return '';const p=presentP(q.id),st=p.lastCorrect===true?'ok':p.lastCorrect===false?'no':'';return `<button type="button" class="qchip ${st}" data-action="openQ" data-id="${esc(q.id)}">#${String(n).padStart(3,'0')}</button>`}).join('');
+ const row=(k,txt,ns)=>`<div class="cr-exp-row"><div class="cr-k">${k}</div><div>${txt}<div class="tip-q" style="margin-top:6px">${ch(ns)}</div></div></div>`;
+ return `<section class="tips-sec" id="cr-seq"><h2>🔢 Câu xếp thứ tự <small>13 câu “correct order” · chọn cặp bước thứ 2 → 3</small></h2>
+ <p class="tiny" style="margin:0 0 10px">Mỗi câu luôn có 1 đáp án sai <b>giống đáp án đúng ở số 1, 4, 5, chỉ đảo số 2 ↔ 3</b>. Nhớ số đầu để còn 2 phương án, rồi dùng quy tắc dưới đây để chọn bước nào đứng thứ 2.</p>
+ <div class="cr-table cr-exp">
+  ${row('Chuỗi chính',`<b class="cr-good-t">Identify / Read</b> &gt; <b class="cr-good-t">Assess / Examine</b> &gt; <b class="cr-good-t">Compare</b> &gt; <b class="cr-good-t">Form</b><br><span class="cr-note">Có Identify hoặc Read trong cặp → nó đứng thứ 2, không cần xét từ còn lại. Hai bước cùng Identify (#034): Identify major (tổng quát) trước Identify touchpoints (chi tiết).</span>`,[3,9,17,34,41,60,100,30,59,75])}
+  ${row('Cặp riêng',`<b class="cr-good-t">Submit</b> &gt; Group · <b class="cr-good-t">Confirm</b> &gt; Add · <b class="cr-good-t">Translate</b> &gt; Run<br><span class="cr-note">Gửi cho Claude rồi mới gom nhóm; chốt đối tượng đọc rồi mới thêm nội dung; chuyển feedback thành thay đổi rồi mới chạy.</span>`,[26,45,78])}
+  ${row('Cẩn thận',`<b>Compare</b> đứng sau Identify / Read / Assess nhưng <b>trước Form</b> (#075). <b>Confirm</b> đứng <b>trước Add</b> (#045) nhưng <b>sau Examine</b> (#059).`,[75,45,59])}
+ </div></section>`;
 }
 /* Học tủ: chữ đầu / cụm từ chỉ có ở đáp án đúng (hoặc chỉ ở đáp án sai) trong bộ CCAR-P */
 function crampSureData(){
