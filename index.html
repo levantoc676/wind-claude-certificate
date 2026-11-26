@@ -3034,6 +3034,8 @@ window.addEventListener('popstate',onRoute);window.addEventListener('hashchange'
 </script>
 <script>
 /* ===== Thi thử: chọn nhiều chủ đề ===== */
+/* Đổi chủ đề trong Thi thử → số câu tự lấy tối đa */
+function examCountMax(){UI.count=Math.max(1,examCandidates().length)}
 function examTopicSel(){const ok=new Set(possibleCategories().map(c=>c.id));return (Array.isArray(UI.examTopics)?UI.examTopics:[]).filter(id=>ok.has(id))}
 {const _ec=examCandidates;examCandidates=function(){const sel=examTopicSel();if(!sel.length)return _ec();
  const t=UI.topic;UI.topic='all';let out;try{out=_ec()}finally{UI.topic=t}const S=new Set(sel);return out.filter(q=>S.has(categoryOf(q)))}}
@@ -3063,9 +3065,9 @@ function examTopicPicker(){
 document.addEventListener('toggle',e=>{const d=e.target;if(d&&d.classList&&d.classList.contains('xt-pick'))XT_OPEN=d.open},true);
 document.addEventListener('click',e=>{if(!XT_OPEN)return;const d=document.querySelector('.xt-pick[open]');if(d&&!d.contains(e.target)){d.open=false;XT_OPEN=false}});
 document.addEventListener('change',e=>{const t=e.target;if(!t||!t.dataset||t.dataset.extopic===undefined)return;
- const s=new Set(examTopicSel());t.checked?s.add(t.dataset.extopic):s.delete(t.dataset.extopic);UI.examTopics=[...s];save();renderContentKeepScroll()});
+ const s=new Set(examTopicSel());t.checked?s.add(t.dataset.extopic):s.delete(t.dataset.extopic);UI.examTopics=[...s];examCountMax();save();renderContentKeepScroll()});
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-action=exTopicsAll]');if(!b)return;e.preventDefault();e.stopPropagation();
- const cats=possibleCategories(),sel=new Set(examTopicSel());UI.examTopics=cats.every(c=>sel.has(c.id))?[]:cats.map(c=>c.id);save();renderContentKeepScroll()},true);
+ const cats=possibleCategories(),sel=new Set(examTopicSel());UI.examTopics=cats.every(c=>sel.has(c.id))?[]:cats.map(c=>c.id);examCountMax();save();renderContentKeepScroll()},true);
 </script>
 <script>
 /* ===== Xem lại bài thi trên điện thoại: nút nổi cuộn về bảng số câu để chọn câu khác ===== */
