@@ -762,6 +762,7 @@ details.tp-fold .tp-list{margin-top:10px}
 .ex-topic input{flex:none;width:16px;height:16px;margin:0}
 @media(max-width:900px){.ex-filters{flex-direction:column;align-items:stretch}.ex-filters .select-group{flex-direction:column;align-items:stretch;gap:5px}.ex-filters .select-group select{max-width:none;width:100%}.ex-filters .shuffle-btn{width:100%;margin-top:4px}}
 @media(max-width:900px){.xt-group{flex:1 1 100%;flex-direction:column;align-items:stretch}.xt-pick{flex:1}.xt-pick>summary{max-width:none}.xt-pop{position:static;width:auto;max-height:none;margin-top:8px;box-shadow:none}.ex-topics-list{grid-template-columns:1fr}}
+.learn-side .xt-group{flex-direction:column;align-items:stretch}.learn-side .xt-pick>summary{min-width:0;max-width:none}.learn-side .xt-pop{position:static;width:auto;max-height:none;margin-top:8px;padding:10px;box-shadow:none}.learn-side .ex-topics-list{grid-template-columns:1fr}.learn-side .ex-topic small{margin-left:auto}
 /* nút nổi về bảng số câu (xem lại bài thi, điện thoại) */
 .xr-backnav{position:fixed;right:14px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:60;border:0;border-radius:999px;padding:12px 18px;font:inherit;font-weight:800;font-size:15px;background:var(--accent);color:#06221b;box-shadow:0 6px 20px #0008;cursor:pointer}
 .xr-backnav[hidden]{display:none}
@@ -2973,7 +2974,7 @@ function shRestore(){
 }
 function shApply(){
  const inExam=UI.view==='exam'&&typeof EXAM!=='undefined'&&EXAM&&EXAM.started;
- const rnd=UI.sort==='random'?'r'+(UI.randomSeed||0):null;
+ const rnd=(UI.view==='learn'?UI.learnInner==='random':UI.sort==='random')?'r'+(UI.randomSeed||0):null;
  const seedYN=inExam?(EXAM.inner==='original'?null:'ex'+EXAM.started):rnd,seedOpt=inExam?null:rnd;
  const key=seedYN+'|'+seedOpt;if(key===SH.seed)return;SH.seed=key;
  shRestore();
@@ -3036,7 +3037,9 @@ window.addEventListener('popstate',onRoute);window.addEventListener('hashchange'
 /* ===== Thi thử: chọn nhiều chủ đề ===== */
 /* Đổi chủ đề trong Thi thử → số câu tự lấy tối đa */
 function examCountMax(){UI.count=Math.max(1,examCandidates().length)}
-function examTopicSel(){const ok=new Set(possibleCategories().map(c=>c.id));return (Array.isArray(UI.examTopics)?UI.examTopics:[]).filter(id=>ok.has(id))}
+function topicSel(key){const ok=new Set(possibleCategories().map(c=>c.id));return (Array.isArray(UI[key])?UI[key]:[]).filter(id=>ok.has(id))}
+function examTopicSel(){return topicSel('examTopics')}
+const xtKey=()=>UI.view==='exam'?'examTopics':'learnTopics';
 {const _ec=examCandidates;examCandidates=function(){const sel=examTopicSel();if(!sel.length)return _ec();
  const t=UI.topic;UI.topic='all';let out;try{out=_ec()}finally{UI.topic=t}const S=new Set(sel);return out.filter(q=>S.has(categoryOf(q)))}}
 function examTopicsHTML(){
@@ -3048,10 +3051,10 @@ function examTopicsHTML(){
 /* Thi thử: ô Chủ đề ở bộ lọc = chọn nhiều chủ đề; Trạng thái chỉ còn 4 lựa chọn */
 const EX_STATUS=[['all','Tất cả'],['forget','🧠 Hay quên'],['unseen','Chưa học'],['star','Đã đánh dấu']];
 let XT_OPEN=false;
-function examTopicPicker(){
- const cats=possibleCategories(),sel=new Set(examTopicSel()),all=cats.length&&cats.every(c=>sel.has(c.id));
+function examTopicPicker(key='examTopics'){
+ const cats=possibleCategories(),sel=new Set(topicSel(key)),all=cats.length&&cats.every(c=>sel.has(c.id));
  const lbl=!sel.size||all?`Mọi chủ đề (${cats.length})`:sel.size===1?esc((cats.find(c=>sel.has(c.id))||{}).title||'1 chủ đề'):`Đã chọn ${sel.size}/${cats.length} chủ đề`;
- return `<div class="select-group xt-group"><label>Chủ đề</label><details class="xt-pick" ${XT_OPEN?'open':''}><summary>${lbl}</summary><div class="xt-pop"><div class="ex-topics-head"><b>Chủ đề trong đề thi</b><span class="tiny">${sel.size?`Đã chọn ${sel.size}/${cats.length}`:'Chưa chọn = lấy mọi chủ đề'}</span><span class="sp"></span><button type="button" class="btn mini" data-action="exTopicsAll">${all?'Bỏ chọn tất cả':'Chọn tất cả'}</button></div><div class="ex-topics-list">${cats.map(c=>`<label class="ex-topic ${sel.has(c.id)?'on':''}"><input type="checkbox" data-extopic="${esc(c.id)}" ${sel.has(c.id)?'checked':''}><span>${esc(UI.bank==='ALL'?c.bank+' · '+c.title:c.title)}</span><small>${c.count}</small></label>`).join('')}</div></div></details></div>`;
+ return `<div class="select-group xt-group"><label>Chủ đề</label><details class="xt-pick" ${XT_OPEN?'open':''}><summary>${lbl}</summary><div class="xt-pop"><div class="ex-topics-head"><b>${key==='examTopics'?'Chủ đề trong đề thi':'Chủ đề ôn tập'}</b><span class="tiny">${sel.size?`Đã chọn ${sel.size}/${cats.length}`:'Chưa chọn = lấy mọi chủ đề'}</span><span class="sp"></span><button type="button" class="btn mini" data-action="exTopicsAll">${all?'Bỏ chọn tất cả':'Chọn tất cả'}</button></div><div class="ex-topics-list">${cats.map(c=>`<label class="ex-topic ${sel.has(c.id)?'on':''}"><input type="checkbox" data-extopic="${esc(c.id)}" ${sel.has(c.id)?'checked':''}><span>${esc(UI.bank==='ALL'?c.bank+' · '+c.title:c.title)}</span><small>${c.count}</small></label>`).join('')}</div></div></details></div>`;
 }
 {const _ec2=examCandidates;examCandidates=function(){if(UI.view!=='exam')return _ec2();const t=UI.topic;if(!examTopicSel().length)UI.topic='all';try{return _ec2()}finally{UI.topic=t}}}
 {const _fb2=filterBar;filterBar=function(){
@@ -3065,9 +3068,9 @@ function examTopicPicker(){
 document.addEventListener('toggle',e=>{const d=e.target;if(d&&d.classList&&d.classList.contains('xt-pick'))XT_OPEN=d.open},true);
 document.addEventListener('click',e=>{if(!XT_OPEN)return;const d=document.querySelector('.xt-pick[open]');if(d&&!d.contains(e.target)){d.open=false;XT_OPEN=false}});
 document.addEventListener('change',e=>{const t=e.target;if(!t||!t.dataset||t.dataset.extopic===undefined)return;
- const s=new Set(examTopicSel());t.checked?s.add(t.dataset.extopic):s.delete(t.dataset.extopic);UI.examTopics=[...s];examCountMax();save();renderContentKeepScroll()});
+ const K=xtKey(),s=new Set(topicSel(K));t.checked?s.add(t.dataset.extopic):s.delete(t.dataset.extopic);UI[K]=[...s];if(K==='examTopics')examCountMax();else{UI.page=1;UI.learnId=null}save();renderContentKeepScroll()});
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-action=exTopicsAll]');if(!b)return;e.preventDefault();e.stopPropagation();
- const cats=possibleCategories(),sel=new Set(examTopicSel());UI.examTopics=cats.every(c=>sel.has(c.id))?[]:cats.map(c=>c.id);examCountMax();save();renderContentKeepScroll()},true);
+ const K=xtKey(),cats=possibleCategories(),sel=new Set(topicSel(K));UI[K]=cats.every(c=>sel.has(c.id))?[]:cats.map(c=>c.id);if(K==='examTopics')examCountMax();else{UI.page=1;UI.learnId=null}save();renderContentKeepScroll()},true);
 </script>
 <script>
 /* ===== Xem lại bài thi trên điện thoại: nút nổi cuộn về bảng số câu để chọn câu khác ===== */
@@ -3122,6 +3125,18 @@ try{if(!localStorage.getItem('claude.study.atlas.aofirst.v1')){UI.bank='CCAO-F';
  const sel=`<div class="select-group" title="Thứ tự các câu trong đề luôn được trộn. Ô này chọn thứ tự phương án và các bước (1)…(n) trong từng câu."><label for="examOrder">Sắp xếp trong câu</label><select id="examOrder"><option value="original" ${UI.examOrder==='original'?'selected':''}>Thứ tự gốc</option><option value="random" ${UI.examOrder==='random'?'selected':''}>Ngẫu nhiên</option></select></div>`;
  return h.slice(0,a)+sel+h.slice(e)}}
 document.addEventListener('change',e=>{if(e.target&&e.target.id==='examOrder'){UI.examOrder=e.target.value==='original'?'original':'random';save();renderContentKeepScroll()}});
+/* Ôn tập câu hỏi: bộ lọc giống Thi thử — Chủ đề chọn nhiều; Sắp xếp câu + Sắp xếp trong câu */
+{const _flt=filtered;filtered=function(){if(UI.view!=='learn')return _flt();const sel=topicSel('learnTopics'),t=UI.topic;UI.topic='all';let out;try{out=_flt()}finally{UI.topic=t}
+ if(!sel.length)return out;const S=new Set(sel);return out.filter(q=>S.has(categoryOf(q)))}}
+{const _fl=filterBar;filterBar=function(){let h=_fl();if(UI.view!=='learn')return h;
+ if(UI.learnInner!=='original'&&UI.learnInner!=='random')UI.learnInner='original';
+ const a=h.indexOf('<div class="select-group"><label for="poolTopic">');if(a>=0){const b=h.indexOf('</div>',a)+6;h=h.slice(0,a)+examTopicPicker('learnTopics')+h.slice(b)}
+ h=h.replace('<label for="poolSort">Sắp xếp</label>','<label for="poolSort">Sắp xếp câu</label>');
+ h=h.replace(/(<button type="button" class="btn mini shuffle-btn[^"]*" data-action="reshuffle" title=")[^"]*"/,'$1Trộn lại thứ tự câu (và thứ tự trong câu nếu chọn Ngẫu nhiên)"');
+ const k=h.indexOf('<label for="poolSort">');if(k<0)return h;const e=h.indexOf('</div>',h.indexOf('</select>',k))+6;
+ const sel=`<div class="select-group" title="Thứ tự phương án và các bước (1)…(n) trong từng câu."><label for="learnOrder">Sắp xếp trong câu</label><select id="learnOrder"><option value="original" ${UI.learnInner==='original'?'selected':''}>Thứ tự gốc</option><option value="random" ${UI.learnInner==='random'?'selected':''}>Ngẫu nhiên</option></select></div>`;
+ return h.slice(0,e)+sel+h.slice(e)}}
+document.addEventListener('change',e=>{if(e.target&&e.target.id==='learnOrder'){UI.learnInner=e.target.value==='random'?'random':'original';if(UI.learnInner==='random')UI.randomSeed=Math.floor(Math.random()*2**30);UI.learnId=null;save();renderContentKeepScroll()}});
 </script>
 <script>
 /* ===== Ôn tập: checkbox "Hiện đáp án đúng luôn" (thay cho tab Đề CCAO-F) ===== */
