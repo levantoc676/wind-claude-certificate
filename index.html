@@ -650,6 +650,7 @@ body.in-tips .dock{display:none!important}
 .tt b{font-weight:700;color:var(--accent)}
 .tt i{font-style:normal;color:var(--muted);font-size:.92em}
 .tip-q{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start}
+a.qchip{text-decoration:none;display:inline-block}
 .qchip{font:600 12px var(--mono);padding:3px 7px;border-radius:7px;border:1px solid var(--stroke2);background:var(--surface2);color:var(--ink);cursor:pointer}
 .qchip:hover{border-color:var(--accent);color:var(--accent)}
 .qchip.ok{border-color:color-mix(in srgb,var(--green) 60%,transparent);color:var(--green)}
@@ -3092,13 +3093,26 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
 const ROUTES={learn:'on-tap',tips:'meo-thi',cramp:'hoc-tu',vocab:'hoc-tu-moi',exam:'thi-thu',stats:'thong-ke'};
 const ROUTE_TITLE={learn:'Ôn tập câu hỏi',tips:'Mẹo thi CCAR-P',cramp:'Học tủ',vocab:'Học từ mới',exam:'Thi thử',stats:'Thống kê'};
 const viewFromHash=()=>{const h=decodeURIComponent(location.hash.replace(/^#\/?/,'')).split(/[/?]/)[0];return Object.keys(ROUTES).find(v=>ROUTES[v]===h)||null};
-let ROUTE_SYNC=false;
+let ROUTE_SYNC=false;const PENDING_Q=(location.hash.match(/[?&]q=([^&]+)/)||[])[1]||null;
 (function(){const v=viewFromHash();if(v&&v!==UI.view){UI.view=v;try{save()}catch(e){}}})();
 {const _r=render;render=function(){_r();if(ROUTE_SYNC)return;const slug=ROUTES[UI.view];if(!slug)return;const want='#/'+slug;
  if(location.hash!==want){try{history[location.hash?'pushState':'replaceState'](null,'',want)}catch(e){location.hash=want}}
  document.title=(ROUTE_TITLE[UI.view]||'')+' · Wind Claude Certificate'}}
 const onRoute=()=>{const v=viewFromHash();if(v&&v!==UI.view){ROUTE_SYNC=true;try{UI.view=v;UI.mobile=false;save();render();window.scrollTo({top:0,behavior:'instant'})}finally{ROUTE_SYNC=false}document.title=(ROUTE_TITLE[v]||'')+' · Wind Claude Certificate'}};
 window.addEventListener('popstate',onRoute);window.addEventListener('hashchange',onRoute);
+/* Số câu (#002…) là link thật: bấm chuột giữa / Ctrl+click mở câu ở tab mới (#/on-tap?q=<mã câu>) */
+const qLink=id=>location.pathname+location.search+'#/on-tap?q='+encodeURIComponent(id);
+function qchipLinks(root){(root||document).querySelectorAll('button[data-action="openQ"][data-id]').forEach(b=>{const a=document.createElement('a');
+ for(const at of b.attributes)if(at.name!=='type')a.setAttribute(at.name,at.value);a.href=qLink(b.dataset.id);a.innerHTML=b.innerHTML;if(!a.title)a.title='Bấm để mở · chuột giữa / Ctrl+click: mở ở tab mới';b.replaceWith(a)})}
+new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes)if(n.nodeType===1&&(n.matches?.('button[data-action="openQ"]')||n.querySelector?.('button[data-action="openQ"]'))){qchipLinks(n.parentNode||n);}}).observe(document.body,{childList:true,subtree:true});
+qchipLinks();
+/* bấm chuột trái thường: giữ cách mở cũ (không đổi URL); có Ctrl/⌘/Shift hoặc chuột giữa thì để trình duyệt mở tab mới */
+document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a[data-action="openQ"]');if(!a)return;
+ if(e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey){e.stopImmediatePropagation();return}e.preventDefault();e.stopImmediatePropagation();jumpQuestion(a.dataset.id)},true);
+/* mở trực tiếp một câu từ đường dẫn */
+let PQ_USED=false;function openQFromHash(){const m=location.hash.match(/[?&]q=([^&]+)/);const raw=m?m[1]:(!PQ_USED&&PENDING_Q);PQ_USED=true;if(!raw)return;const id=decodeURIComponent(raw);if(!INDEX[id])return;
+ ROUTE_SYNC=true;try{jumpQuestion(id)}finally{ROUTE_SYNC=false}try{history.replaceState(null,'','#/on-tap')}catch(e){}document.title='Ôn tập câu hỏi · Wind Claude Certificate'}
+window.addEventListener('hashchange',openQFromHash);setTimeout(openQFromHash,0);
 </script>
 <script>
 /* ===== Thi thử: chọn nhiều chủ đề ===== */
