@@ -732,7 +732,8 @@ details.tp-fold .tp-list{margin-top:10px}
 .cr-keynote{margin:-6px 0 14px}
 /* Học tủ: tab chữ đầu chắc đúng / chắc sai */
 .cr-mode .cr-mode-wide{grid-column:1/-1}
-.cr-ans-row{grid-template-columns:auto minmax(0,1fr) minmax(0,38%)!important;align-items:center}.cr-ans-t{min-width:0}.cr-ans-t b{color:var(--green)}.cr-ans-more{color:var(--soft)}.cr-ans-tag{font-size:11px;color:var(--accent2);border:1px solid var(--stroke2);border-radius:6px;padding:0 5px;margin-left:4px;white-space:nowrap}.cr-ans-k{font-size:12px;color:var(--soft);text-align:right;overflow-wrap:anywhere}
+.cr-ans-row{grid-template-columns:auto minmax(0,1fr) minmax(0,38%)!important;align-items:center}.cr-ans-t{min-width:0}.cr-ans-t b{color:var(--green)}.cr-ans-more{color:var(--soft)}.cr-ans-tag{font-size:11px;color:var(--accent2);border:1px solid var(--stroke2);border-radius:6px;padding:0 5px;margin-left:4px;white-space:nowrap}.cr-ans-chips{display:flex;flex-wrap:wrap;gap:4px;max-width:150px}.cr-ans-chips small{opacity:.7}.cr-ans-sub{margin-top:5px;font-size:13px;color:var(--muted);display:grid;gap:2px}.cr-ans-subrow{display:flex;align-items:baseline;gap:8px}.cr-ans-subrow .qchip{flex:none;font-size:11px;padding:1px 6px}.cr-ans-sub .qn{font-family:var(--mono);font-size:11px;color:var(--soft)}.cr-ans-k2{color:var(--soft);font-size:11px;margin-left:8px}.cr-ans-k2:before{content:'· key: '}
+.cr-ans-k{font-size:12px;color:var(--soft);text-align:right;overflow-wrap:anywhere}
 @media(max-width:700px){.cr-ans-row{grid-template-columns:auto minmax(0,1fr)!important}.cr-ans-k{grid-column:2;text-align:left}}
 .cr-sure-row{grid-template-columns:minmax(150px,1fr) 70px minmax(0,2.2fr)!important}
 .cr-k.cr-good{color:var(--green)}
@@ -2878,12 +2879,24 @@ function crampAnsData(){
  return rows;
 }
 function crampAnsHTML(){
- const rows=crampAnsData(),G=[];
- for(const r of rows){const c=r.head.charAt(0).toUpperCase(),L=/[A-Z]/.test(c)?c:'0–9';let g=G[G.length-1];if(!g||g.L!==L)G.push(g={L,rows:[]});g.rows.push(r)}
- const chip=q=>{const p=presentP(q.id),st=p.lastCorrect===true?'ok':p.lastCorrect===false?'no':'';return `<button type="button" class="qchip ${st}" data-action="openQ" data-id="${esc(q.id)}">#${String(q.n).padStart(3,'0')}</button>`};
- const row=r=>{const c=CX.cram[r.q.n];return `<div class="cr-row cr-ans-row" data-s="${esc((r.full+' '+(c?c.k:'')+' '+r.q.n).toLowerCase())}" title="${esc(r.full)}">${chip(r.q)}<div class="cr-ans-t"><b>${esc(r.head)}</b>${r.rest?' '+esc(r.rest):''}${r.more?'<span class="cr-ans-more"> …</span>':''}${r.multi?' <span class="cr-ans-tag">chọn '+r.q.answer.length+'</span>':''}</div>${c?`<div class="cr-ans-k">${esc(c.k)}</div>`:''}</div>`};
- return `<p class="tiny cr-keynote">${rows.length} đáp án đúng của ${Object.keys(CX.byN).length} câu ${CX.bank}, xếp A–Z. Mỗi dòng lấy <b>chữ đầu + vài chữ sau</b>, đủ để không trùng phần mở đầu của đáp án sai trong cùng câu. Rê chuột (hoặc chạm) để xem cả câu; cột phải là key trong đề.</p>`
-  +G.map(g=>`<section class="tips-sec cr-sec" id="cr-A-${g.L}"><h2>${g.L} <small>${g.rows.length} đáp án</small></h2><div class="cr-table">${g.rows.map(row).join('')}</div></section>`).join('');
+ const rows0=crampAnsData(),M=new Map();
+ /* gộp các đáp án gần giống nhau: cùng 2 chữ đầu (câu xếp thứ tự: cùng dãy số) */
+ for(const r of rows0){const ws=(r.head+(r.rest?' '+r.rest:'')).split(' '),isSeq=/^[\d,\s]+$/.test(r.full);
+  const key=(isSeq?r.full:ws.slice(0,2).join(' ')).toLowerCase();let g=M.get(key);if(!g)M.set(key,g={items:[],isSeq});g.items.push({...r,ws})}
+ const rows=[...M.values()].map(g=>{let n=Math.min(...g.items.map(x=>x.ws.length));const a=g.items[0].ws;
+  for(let i=0;i<n;i++){if(g.items.some(x=>x.ws[i].toLowerCase()!==a[i].toLowerCase())){n=i;break}}
+  const ws=a.slice(0,Math.max(n,1));return {items:g.items.sort((x,y)=>x.q.n-y.q.n),head:ws[0],rest:ws.slice(1).join(' '),more:g.items.some(x=>x.more||x.ws.length>ws.length),isSeq:g.isSeq}});
+ rows.sort((a,b)=>(a.head+' '+a.rest).localeCompare(b.head+' '+b.rest,'en',{sensitivity:'base',numeric:true})||a.items[0].q.n-b.items[0].q.n);
+ const G=[];for(const r of rows){const c=r.head.charAt(0).toUpperCase(),L=/[A-Z]/.test(c)?c:'0–9';let g=G[G.length-1];if(!g||g.L!==L)G.push(g={L,rows:[]});g.rows.push(r)}
+ const chip=x=>{const p=presentP(x.q.id),st=p.lastCorrect===true?'ok':p.lastCorrect===false?'no':'';return `<button type="button" class="qchip ${st}" data-action="openQ" data-id="${esc(x.q.id)}" title="${esc(x.full)}">#${String(x.q.n).padStart(3,'0')}${x.multi?'<small> ·2</small>':''}</button>`};
+ const row=r=>{const one=r.items.length===1,x0=r.items[0];
+  const keys=r.items.map(x=>{const c=CX.cram[x.q.n];return c?c.k:''});
+  const common=r.rest?r.rest.split(' ').length+1:1;
+  const sub=one?'':`<div class="cr-ans-sub">${r.items.map(x=>{const fw=String(x.full).replace(/\s+/g,' ').trim().split(' '),take=Math.max(x.ws.length,common+4),extra=fw.slice(common,take).join(' ');return `<div class="cr-ans-subrow">${chip(x)}<span>… ${esc(extra)}${fw.length>take?' …':''}<span class="cr-ans-k2">${esc(CX.cram[x.q.n]?CX.cram[x.q.n].k:'')}</span></span></div>`}).join('')}</div>`;
+  return `<div class="cr-row cr-ans-row" data-s="${esc((r.items.map(x=>x.full+' '+(CX.cram[x.q.n]?CX.cram[x.q.n].k:'')+' '+x.q.n).join(' ')).toLowerCase())}" title="${one?esc(x0.full):''}"><div class="cr-ans-chips">${one?chip(x0):`<span class="cr-ans-tag">${r.items.length} câu</span>`}</div><div class="cr-ans-t"><b>${esc(r.head)}</b>${r.rest?' '+esc(r.rest):''}${r.more?'<span class="cr-ans-more"> …</span>':''}${one&&x0.multi?' <span class="cr-ans-tag">chọn '+x0.q.answer.length+'</span>':''}${sub}</div>${one&&keys[0]?`<div class="cr-ans-k">${esc(keys[0])}</div>`:'<div></div>'}</div>`};
+ const merged=rows.filter(r=>r.items.length>1).length;
+ return `<p class="tiny cr-keynote">${rows0.length} đáp án đúng của ${Object.keys(CX.byN).length} câu ${CX.bank}, xếp A–Z; <b>gộp ${merged} nhóm</b> có cùng 2 chữ đầu (câu xếp thứ tự: cùng dãy số) thành một dòng. Mỗi dòng lấy <b>chữ đầu + vài chữ sau</b>; dòng gộp liệt kê phần khác nhau của từng câu. Rê chuột vào số câu để xem cả đáp án; cột phải là key trong đề.</p>`
+  +G.map(g=>`<section class="tips-sec cr-sec" id="cr-A-${g.L}"><h2>${g.L} <small>${g.rows.length} dòng</small></h2><div class="cr-table">${g.rows.map(row).join('')}</div></section>`).join('');
 }
 {const _rca=renderCramp;renderCramp=function(){if(UI.crMode!=='ans')return _rca();
  const keep=UI.crMode;UI.crMode='key';let h;try{h=_rca()}finally{UI.crMode=keep}
