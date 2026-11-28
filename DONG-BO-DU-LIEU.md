@@ -203,3 +203,15 @@ Mã chủ đề AP của bộ CCAR-P (AP = **A**rchitect **P**rofessional) trư�
   - Phần giải thích có thêm dòng "Thứ tự các bước đã đảo: (1) = gốc (3)…", nội dung giải thích vẫn viết theo thứ tự gốc.
 - **Những gì giữ nguyên:** mã phương án, đáp án đúng và tiến độ học. Bỏ chế độ Ngẫu nhiên thì đề về như cũ.
 - Đã kiểm tra bằng máy cả 13 câu: đọc đáp án mới theo đề mới ra đúng trình tự các bước như đáp án gốc, ở cả tiếng Anh và tiếng Việt.
+
+## Lần 14: 28/11/2026, thêm Học tủ CCAR-F; Thi thử lọc được "✓ Đã thuộc"
+
+- **Học tủ CCAR-F:** khối dữ liệu mới `id="wcc-cramf"` (162 câu, cùng dạng `{ "<số câu>": { "k", "a" } }` như `wcc-cramo`). Tab Học tủ có thêm nút **CCAR-F** (giữa CCAO-F và CCAR-P), chia theo 5 domain sẵn có AR1–AR5.
+  - Key đề do Claude chọn theo nội dung từng câu, ưu tiên cụm dễ nhớ (số liệu, tên tool, tình huống). Các câu giống nhau dùng key nhóm `X | Y` để nằm cạnh nhau khi xếp A–Z, ví dụ `yesterday | …` (resume / fork_session), `first 8 | …`, `invoices | 8% / 18% …`, `extract_metadata | …`, `delivery-specific | …`, `test generation | …`.
+  - Đáp án tủ: chữ đầu của đáp án đúng nếu không trùng đáp án sai; nếu trùng thì thêm vài chữ, hoặc dạng `Chữ đầu … cụm phân biệt` (vd `Resume … fork_session`, `Use Grep … distinctive text`).
+  - Đã kiểm tra bằng máy cả 162 câu: mọi phần của key có trong đề và tổ hợp key chỉ có ở đúng câu đó; đáp án tủ khớp đáp án đúng và không khớp đáp án sai nào.
+  - 7 câu bất đồng đáp án (#044, #049, #057, #078, #082, #130, #134): đáp án tủ theo đáp án Exam Trainer (đáp án chấm điểm của web), có ghi chú "(đáp án bất đồng: Quizlet chọn …)".
+  - Ôn tập: Sắp xếp "✎ Theo key Học tủ" và panel Học tủ nay dùng được cho cả CCAR-F.
+- **Thi thử:** ô Trạng thái có thêm **✓ Đã thuộc** để thi lại riêng các câu đã bấm Đã thuộc.
+- Không đổi đề, đáp án, giải thích hay tiến độ học.
+

@@ -22,6 +22,7 @@ Cập nhật: 23/11/2026
   - CCAR-F 162, CCAR-P 113, CCDV-F 95, CCAO-F 119.
   - 5 câu trùng đã bị bỏ: CCAR-P #105, #108, #109 và CCDV-F #047, #067.
 - `id="wcc-tips"`: tab Mẹo thi CCAR-P. Có 146 mẹo chia theo D1–D7, mỗi mẹo kèm số câu liên quan.
+- `id="wcc-cramf"`: **Học tủ CCAR-F** (28/11, 162 câu, domain AR1–AR5, `CRAMF` / `AR_BY_N` / `AR_DOMAINS`). Tab Học tủ có 3 nút bộ: CCAO-F, CCAR-F, CCAR-P (`UI.crBank`). Sắp xếp "✎ Theo key Học tủ" ở Ôn tập dùng cho CCAO-F và CCAR-F.
 - `id="wcc-cramo"`: **Học tủ CCAO-F** (25/11), cùng dạng với `wcc-cramp`. Tab Học tủ có nút chọn bộ CCAR-P / CCAO-F (`UI.crBank`, ngữ cảnh `crCtx()` / biến `CX`). Mục Yes/No và 💡 Kinh nghiệm chỉ có ở CCAR-P.
 - **Người dùng đang ôn CCAO-F** (25/11): CCAO-F đứng đầu mọi danh sách bộ học (sắp lại `META.banks` lúc chạy), Học tủ mặc định CCAO-F, và một lần duy nhất chọn sẵn Bộ học = CCAO-F (cờ `claude.study.atlas.aofirst.v1`).
 - **Sắp xếp "✎ Theo key Học tủ"** (`UI.sort='key'`): chỉ hiện khi Bộ học = CCAO-F; xếp câu theo key Học tủ A–Z để câu cùng nhóm key nằm cạnh nhau, thẻ câu ở Ôn tập hiện nhãn key (`.lq-key`). Chọn bộ khác thì tự về Thứ tự gốc.
@@ -60,7 +61,7 @@ Cập nhật: 23/11/2026
   - Code nằm trong khối `SH` / `shApply`.
 - **Thi thử:**
   - Chọn được nhiều chủ đề (`UI.examTopics`). Từ 25/11 ô chọn nhiều chủ đề nằm ngay trong bộ lọc, thay ô "Chủ đề" (`examTopicPicker`, dạng dropdown có checkbox); chưa chọn = mọi chủ đề (bỏ qua `UI.topic`).
-  - Trạng thái trong Thi thử chỉ còn: Tất cả, 🧠 Hay quên, Chưa học, Đã đánh dấu (`EX_STATUS`). Trạng thái khác (vd. Cần ôn lại) tự về Tất cả khi mở tab Thi thử. Các tab khác giữ đủ lựa chọn.
+  - Trạng thái trong Thi thử (`EX_STATUS`): Tất cả, 🧠 Hay quên, ✓ Đã thuộc (thêm 28/11 để thi lại câu đã thuộc), 📘 Chưa thuộc, Chưa học, Đã đánh dấu. Trạng thái khác (vd. Cần ôn lại) tự về Tất cả khi mở tab Thi thử. Các tab khác giữ đủ lựa chọn.
   - Nút "🧠 Thi riêng N câu hay quên" chỉ lấy câu hay quên của bộ học đang chọn (`forgetIdsBank()`); chọn Tất cả thì lấy mọi bộ.
   - Nút 🔀 Ngẫu nhiên: full-width chỉ ở cột lọc dọc (`.learn-side`), bộ lọc ngang thì nằm cạnh ô Sắp xếp.
   - Trên điện thoại có nút nổi "☰ Chọn câu khác" khi xem lại bài.
