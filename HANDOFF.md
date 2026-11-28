@@ -7,12 +7,12 @@ Cập nhật: 23/11/2026
 - Repo: `github.com/levantoc676/wind-claude-certificate`. Nhánh làm việc là `ninja-theme`, đẩy lên bằng `git push origin ninja-theme:main`. Vercel tự deploy từ `main`.
 - Web: https://wind-claude-certificate.vercel.app. Mỗi tab có một URL riêng:
   - `#/on-tap`: Ôn tập câu hỏi
-  - `#/meo-thi`: Mẹo thi CCAR-P
   - `#/hoc-tu`: Học tủ (CCAO-F / CCAR-P)
   - `#/hoc-tu-moi`: Học từ mới
   - `#/thi-thu`: Thi thử
   - `#/thong-ke`: Thống kê
 - **Ôn tập: checkbox "Hiện đáp án đúng luôn"** (`UI.showAns`, 25/11): tô xanh đáp án đúng và mở sẵn panel Mẹo / Học tủ; khi bật thì bấm phương án không chấm, không ghi tiến độ. Thay cho tab "Đề CCAO-F" đã thử rồi bỏ.
+- **Tab Mẹo thi CCAR-P đã bỏ** (28/11): gỡ `tips` khỏi `VIEWS_ON`, thanh bên, `ROUTES`; mở `#/meo-thi` sẽ về Ôn tập. Mục "📘 Mẹo thi CCAR-P liên quan" trong panel Mẹo ở Ôn tập cũng tắt (`if(0)`). Dữ liệu `wcc-tips` vẫn giữ vì Học tủ CCAR-P dùng `TIPS.domains`.
 - **Tab Flashcards đã bỏ** (25/11): gỡ khỏi `VIEWS_ON`, thanh bên và `ROUTES`; mở `#/flashcards` sẽ về Ôn tập. Code render flashcard vẫn còn trong file nhưng không dùng.
 - Link artifact (https://claude.ai/artifact/1q3qpVrDmcKmeab5eSmgWb) đang **cũ hơn repo nhiều**. Chỉ cập nhật được từ một chat mở ở chính trang artifact đó.
 - Nhật ký đồng bộ dữ liệu: `DONG-BO-DU-LIEU.md` (trong repo, đã chép vào Project ở `claude/dong-bo-du-lieu.md`). Hiện tới **Lần 13**.
