@@ -813,6 +813,8 @@ details.cr-fold>summary h3{margin:0}
 .result-panel #wrongCheck{margin-top:22px;max-width:none}
 .result-panel #wrongCheck>.xf-fold{background:transparent;border:0;border-top:1px solid var(--stroke);border-radius:0;padding:16px 0 0}
 .result-panel #wrongCheck>p.muted{margin:0}
+.xr-card.xr-cur{outline:3px solid var(--accent);outline-offset:3px;box-shadow:0 0 0 1px var(--accent),0 10px 30px rgba(0,0,0,.35)!important;transition:outline-color .15s}
+.palbtn.xr-p.cur{outline:2px solid var(--accent);outline-offset:2px;background:var(--accent)!important;color:#06221b!important;border-color:var(--accent)!important}
 /* Mục lục Câu sai luôn cố định khi cuộn */
 .result-panel{overflow:clip}
 .result-panel .xr-2col>.exam-nav{position:sticky;top:var(--stick,96px);z-index:20}
@@ -3182,6 +3184,28 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
  window.addEventListener('scroll',upd,{passive:true});window.addEventListener('resize',upd);
  {const _r=render;render=function(){_r();requestAnimationFrame(upd)}}
  document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('[data-xr]'))setTimeout(upd,400)});
+})();
+</script>
+<script>
+/* ===== Xem câu sai: câu đang xem có viền nổi bật, ô số tương ứng ở mục lục cũng sáng lên ===== */
+(function(){
+ let raf=0,force=null,forceT=0;
+ const upd=()=>{raf=0;const cards=[...document.querySelectorAll('#wrongCheck .xr-card')];
+  document.querySelectorAll('.xr-card.xr-cur').forEach(c=>{if(!cards.includes(c))c.classList.remove('xr-cur')});
+  if(!cards.length||UI.view!=='exam')return;
+  const nav=document.querySelector('#wrongCheck .exam-nav'),stick=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--stick'))||70;
+  const mobile=window.matchMedia('(max-width:900px)').matches;
+  const line=(mobile?stick+Math.max(nav?nav.getBoundingClientRect().height:0,innerHeight*.3):stick)+40;
+  let cur=null;if(force&&Date.now()<forceT)cur=document.getElementById('xr-'+force);else for(const c of cards){const r=c.getBoundingClientRect();if(r.height===0)continue;if(r.top<=line)cur=c;else{if(!cur)cur=c;break}}
+  if(!(force&&Date.now()<forceT)&&cur&&cards[cards.length-1].getBoundingClientRect().bottom<line)cur=null;
+  for(const c of cards)c.classList.toggle('xr-cur',c===cur);
+  const id=cur?cur.id.slice(3):null;
+  document.querySelectorAll('#wrongCheck [data-xr]').forEach(a=>{const on=a.dataset.xr===id;a.classList.toggle('cur',on);if(on&&nav&&mobile){const ar=a.getBoundingClientRect(),nr=nav.getBoundingClientRect();if(ar.top<nr.top||ar.bottom>nr.bottom)a.scrollIntoView({block:'nearest'})}})};
+ const go=()=>{if(!raf)raf=requestAnimationFrame(upd)};
+ window.addEventListener('scroll',go,{passive:true});window.addEventListener('resize',go);
+ document.addEventListener('toggle',go,true);
+ {const _r=render;render=function(){_r();go()}}
+ document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('#wrongCheck [data-xr]');if(!a)return;force=a.dataset.xr;forceT=Date.now()+1200;go();setTimeout(()=>{force=null;go()},1250)});
 })();
 </script>
 <script>
