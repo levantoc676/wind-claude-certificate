@@ -884,7 +884,7 @@ function safeConfirm(m){let r=false;const t0=Date.now();try{r=window.confirm(m)}
 <script>'use strict';
 const Q=DATA.questions, META=DATA.meta;
 const INDEX=Object.fromEntries(Q.map(q=>[q.id,q]));
-META.banks.sort((a,b)=>(b.id==='CCAO-F')-(a.id==='CCAO-F'));/* CCAO-F lên đầu (đang ôn) */
+{const PRI={'CCAR-F':0,'CCAO-F':1};META.banks.sort((a,b)=>(PRI[a.id]??9)-(PRI[b.id]??9))}/* 28/11: CCAR-F lên đầu (đang ôn), rồi CCAO-F */
 const BANKS=META.banks;
 const LS_KEY='claude.study.atlas.v1';
 const BACKUP_FORMAT='CLAUDE_STUDY_ATLAS';
@@ -1008,7 +1008,7 @@ function renderChrome(){
  }).join('')+`<button class="bank-nav ${UI.bank==='ALL'?'active':''}" data-bank="ALL" title="Tất cả bộ học"><span class="bank-monogram">Σ</span><span class="bank-title">Tất cả bộ học<span>${Q.length} câu · học xuyên bộ</span></span></button>`;
  $('#themeBtn').textContent=UI.theme==='dark'?'☀':'☾';
  $('#globalSearch').value=UI.search;
- $('#topTitle').textContent=({dashboard:'Không gian tự học',study:'Ôn tập chủ động',flash:'Ghi nhớ nhanh',learn:'Ôn tập câu hỏi · tra từ',tips:'Mẹo thi CCAR-P',cramp:'Học tủ · '+(UI.crBank==='CCAR-P'||UI.crBank==='CCAR-F'?UI.crBank:'CCAO-F'),know:'Kiến thức thi CCDV-F',cram:'Học tủ · nhớ nhanh đáp án',vocab:'Học từ mới · sổ từ',notebook:'Sổ tay kiến thức',exam:'Phòng thi thử',stats:'Tiến độ học tập'})[UI.view];
+ $('#topTitle').textContent=({dashboard:'Không gian tự học',study:'Ôn tập chủ động',flash:'Ghi nhớ nhanh',learn:'Ôn tập câu hỏi · tra từ',tips:'Mẹo thi CCAR-P',cramp:'Học tủ · '+(UI.crBank==='CCAR-P'||UI.crBank==='CCAO-F'?UI.crBank:'CCAR-F'),know:'Kiến thức thi CCDV-F',cram:'Học tủ · nhớ nhanh đáp án',vocab:'Học từ mới · sổ từ',notebook:'Sổ tay kiến thức',exam:'Phòng thi thử',stats:'Tiến độ học tập'})[UI.view];
  $('#topSubtitle').textContent=UI.bank==='ALL'?'Tất cả '+BANKS.length+' chứng chỉ':labelBank(UI.bank);
  $('#langSelect').value=UI.lang;
  applyV3Chrome();
@@ -2852,7 +2852,7 @@ const AR_BY_N={};for(const q of Q)if(q.bank==='CCAR-F')AR_BY_N[q.n]=q;
 for(const n in CRAMF){const q=AR_BY_N[n];if(q)CRAMP_BY_ID[q.id]=CRAMF[n]}
 const AR_DOMAINS=[['AR1','Agentic Architecture & Orchestration','Kiến trúc agent & điều phối'],['AR2','Claude Code Configuration & Workflows','Cấu hình & quy trình Claude Code'],['AR3','Prompt Engineering & Structured Output','Prompt & đầu ra có cấu trúc'],['AR4','Tool Design & MCP Integration','Thiết kế tool & tích hợp MCP'],['AR5','Context Management & Reliability','Quản lý context & độ tin cậy']].map(([cat,name,vi])=>({cat,name,vi}));
 const AO_DOMAINS=[['AO1','Prompting & Task Execution','Prompt & thực thi tác vụ'],['AO2','Output Evaluation & Validation','Đánh giá & kiểm chứng đầu ra'],['AO3','Product & Model Selection','Chọn tính năng & model'],['AO4','Workflow Integration & Solution Design','Tích hợp quy trình & thiết kế giải pháp'],['AO5','Configuration & Knowledge Management','Cấu hình & quản lý tri thức'],['AO6','Governance, Risk & Responsible Use','Quản trị, rủi ro & dùng có trách nhiệm'],['AO7','Troubleshooting & Optimization','Xử lý sự cố & tối ưu']].map(([cat,name,vi])=>({cat,name,vi}));
-function crCtx(){if(UI.crBank==='CCAR-F')return {bank:'CCAR-F',pre:'AR',byN:AR_BY_N,cram:CRAMF,domains:AR_DOMAINS,ph:['few-shot','structured','isError','fork_session','coordinator','Grep','hook','tool_choice']};return UI.crBank!=='CCAR-P'?{bank:'CCAO-F',pre:'AO',byN:AO_BY_N,cram:CRAMO,domains:AO_DOMAINS,ph:['define','identify the','a structured','synthesizing']}:{bank:'CCAR-P',pre:'AP',byN:CP_BY_N,cram:CRAMP,domains:TIPS.domains,ph:['define','inspect','Model Context Protocol (MCP)','project-scope','role-based','high-impact','audience']}}
+function crCtx(){if(UI.crBank==='CCAR-F'||!UI.crBank)return {bank:'CCAR-F',pre:'AR',byN:AR_BY_N,cram:CRAMF,domains:AR_DOMAINS,ph:['few-shot','structured','isError','fork_session','coordinator','Grep','hook','tool_choice']};return UI.crBank!=='CCAR-P'?{bank:'CCAO-F',pre:'AO',byN:AO_BY_N,cram:CRAMO,domains:AO_DOMAINS,ph:['define','identify the','a structured','synthesizing']}:{bank:'CCAR-P',pre:'AP',byN:CP_BY_N,cram:CRAMP,domains:TIPS.domains,ph:['define','inspect','Model Context Protocol (MCP)','project-scope','role-based','high-impact','audience']}}
 let CX=crCtx();
 function crampAns(q,c){return (q.multi?`<span class="cr-multi">[Chọn ${q.answer.length}]</span> `:'')+esc(c.a).replace(/\(([^()]*[À-ỹ][^()]*)\)/g,'<span class="cr-note">($1)</span>')}
 function crampYesNo(){
@@ -2872,7 +2872,7 @@ function renderCramp(){
  const all=doms.flatMap(x=>x.qs).filter(q=>CX.cram[q.n]).sort((a,b)=>CX.cram[a.n].k.localeCompare(CX.cram[b.n].k,'en',{sensitivity:'base',numeric:true})||a.n-b.n);
  const letter=q=>{const c=CX.cram[q.n].k.trim().charAt(0).toUpperCase();return /[A-Z]/.test(c)?c:'0–9'};
  const groups=[];for(const q of all){const L=letter(q);let g=groups[groups.length-1];if(!g||g.L!==L)groups.push(g={L,qs:[]});g.qs.push(q)}
- const bankSw=`<div class="cr-mode cr-bank" role="group" aria-label="Bộ đề"><button type="button" data-crbank="CCAO-F" class="${CX.bank==='CCAO-F'?'on':''}">CCAO-F <small>${Object.keys(CRAMO).length} câu</small></button><button type="button" data-crbank="CCAR-F" class="${CX.bank==='CCAR-F'?'on':''}">CCAR-F <small>${Object.keys(CRAMF).length} câu</small></button><button type="button" data-crbank="CCAR-P" class="${isP?'on':''}">CCAR-P <small>${Object.keys(CRAMP).length} câu</small></button></div>`;
+ const bankSw=`<div class="cr-mode cr-bank" role="group" aria-label="Bộ đề"><button type="button" data-crbank="CCAR-F" class="${CX.bank==='CCAR-F'?'on':''}">CCAR-F <small>${Object.keys(CRAMF).length} câu</small></button><button type="button" data-crbank="CCAO-F" class="${CX.bank==='CCAO-F'?'on':''}">CCAO-F <small>${Object.keys(CRAMO).length} câu</small></button><button type="button" data-crbank="CCAR-P" class="${isP?'on':''}">CCAR-P <small>${Object.keys(CRAMP).length} câu</small></button></div>`;
  const modeSw=bankSw+`<div class="cr-mode" role="group" aria-label="Cách xếp"><button type="button" data-crmode="ap" class="${byKey||UI.crMode==='sure'||UI.crMode==='ans'?'':'on'}">Theo chủ đề ${CX.pre}</button><button type="button" data-crmode="key" class="${byKey?'on':''}">Theo key đề bài</button><button type="button" data-crmode="sure" class="cr-mode-wide ${UI.crMode==='sure'?'on':''}">Chữ đầu chắc đúng / chắc sai</button><button type="button" data-crmode="ans" class="cr-mode-wide ${UI.crMode==='ans'?'on':''}">Danh sách đáp án đúng (A–Z)</button></div>`;
  const toc=`<div class="filters tips-toc">${modeSw}<input class="cr-search" id="crSearch" type="search" placeholder="Tìm key trong đề…" autocomplete="off">
  <div class="tips-toc-links ${byKey?'cr-letters':''}">${isP?'<a href="#" data-tipgo="cr-yn">Mẹo câu Yes / No</a>':CX.bank==='CCAO-F'?'<a href="#" data-tipgo="cr-seq">🔢 Câu xếp thứ tự</a>':''}${byKey?groups.map(g=>`<a href="#" data-tipgo="cr-L-${g.L}">${g.L}</a>`).join(''):doms.map(({d,qs})=>`<a href="#" data-tipgo="cr-${d.cat}">${d.cat} · ${esc(d.vi)}<small>${qs.length} câu</small></a>`).join('')}</div>
@@ -2988,7 +2988,7 @@ function renderCrampSure(){
 {const _rm=renderMain;renderMain=function(){normView();if(UI.view==='cramp'){$('#content').innerHTML=renderCramp();return}_rm()}}
 {const _r=render;render=function(){_r();document.body.classList.toggle('in-tips',UI.view==='tips'||UI.view==='cramp')};}
 document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('.cr-a.veil');if(a)a.classList.remove('veil');
- const bk=e.target.closest&&e.target.closest('[data-crbank]');if(bk&&(UI.crBank||'CCAO-F')!==bk.dataset.crbank){UI.crBank=bk.dataset.crbank;save();render();window.scrollTo(0,0);return}
+ const bk=e.target.closest&&e.target.closest('[data-crbank]');if(bk&&(UI.crBank||'CCAR-F')!==bk.dataset.crbank){UI.crBank=bk.dataset.crbank;save();render();window.scrollTo(0,0);return}
  const m=e.target.closest&&e.target.closest('[data-crmode]');if(m&&UI.crMode!==m.dataset.crmode){UI.crMode=m.dataset.crmode;save();render();window.scrollTo(0,0)}});
 document.addEventListener('change',e=>{if(e.target&&e.target.id==='crQuiz'){UI.crQuiz=e.target.checked;save();renderContentKeepScroll()}});
 document.addEventListener('input',e=>{if(e.target&&e.target.id==='crSearch'){const v=e.target.value.trim().toLowerCase();
@@ -3240,8 +3240,8 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
  EXAM=null;save();render();window.scrollTo({top:0,behavior:'instant'});toast('Đã huỷ bài thi.')},true);
 </script>
 <script>
-/* 25/11/2026: đang ôn CCAO-F → chọn sẵn bộ CCAO-F một lần (sau đó đổi tự do) */
-try{if(!localStorage.getItem('claude.study.atlas.aofirst.v1')){UI.bank='CCAO-F';UI.topic='all';UI.examTopics=[];UI.crBank='CCAO-F';UI.page=1;UI.learnId=null;save();render();localStorage.setItem('claude.study.atlas.aofirst.v1','1')}}catch(e){}
+/* 28/11/2026: đang ôn CCAR-F → chọn sẵn bộ CCAR-F một lần (sau đó đổi tự do). Thay cờ aofirst (CCAO-F, 25/11) */
+try{if(!localStorage.getItem('claude.study.atlas.arfirst.v1')){UI.bank='CCAR-F';UI.topic='all';UI.examTopics=[];UI.learnTopics=[];UI.crBank='CCAR-F';UI.page=1;UI.learnId=null;save();render();localStorage.setItem('claude.study.atlas.arfirst.v1','1');localStorage.setItem('claude.study.atlas.aofirst.v1','1')}}catch(e){}
 </script>
 <script>
 /* ===== CCAO-F và CCAR-F: Sắp xếp "Theo key Học tủ (A–Z)" — câu có key giống nhau nằm cạnh nhau ===== */

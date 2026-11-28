@@ -24,7 +24,7 @@ Cập nhật: 23/11/2026
 - `id="wcc-tips"`: tab Mẹo thi CCAR-P. Có 146 mẹo chia theo D1–D7, mỗi mẹo kèm số câu liên quan.
 - `id="wcc-cramf"`: **Học tủ CCAR-F** (28/11, 162 câu, domain AR1–AR5, `CRAMF` / `AR_BY_N` / `AR_DOMAINS`). Tab Học tủ có 3 nút bộ: CCAO-F, CCAR-F, CCAR-P (`UI.crBank`). Sắp xếp "✎ Theo key Học tủ" ở Ôn tập dùng cho CCAO-F và CCAR-F.
 - `id="wcc-cramo"`: **Học tủ CCAO-F** (25/11), cùng dạng với `wcc-cramp`. Tab Học tủ có nút chọn bộ CCAR-P / CCAO-F (`UI.crBank`, ngữ cảnh `crCtx()` / biến `CX`). Mục Yes/No và 💡 Kinh nghiệm chỉ có ở CCAR-P.
-- **Người dùng đang ôn CCAO-F** (25/11): CCAO-F đứng đầu mọi danh sách bộ học (sắp lại `META.banks` lúc chạy), Học tủ mặc định CCAO-F, và một lần duy nhất chọn sẵn Bộ học = CCAO-F (cờ `claude.study.atlas.aofirst.v1`).
+- **Người dùng đang ôn CCAR-F** (28/11, trước đó là CCAO-F từ 25/11): thứ tự bộ học CCAR-F → CCAO-F → các bộ còn lại (sắp lại `META.banks` lúc chạy), Học tủ mặc định CCAR-F và nút CCAR-F đứng đầu, một lần duy nhất chọn sẵn Bộ học = CCAR-F (cờ `claude.study.atlas.arfirst.v1`; cờ cũ `aofirst.v1` không còn dùng).
 - **Sắp xếp "✎ Theo key Học tủ"** (`UI.sort='key'`): chỉ hiện khi Bộ học = CCAO-F; xếp câu theo key Học tủ A–Z để câu cùng nhóm key nằm cạnh nhau, thẻ câu ở Ôn tập hiện nhãn key (`.lq-key`). Chọn bộ khác thì tự về Thứ tự gốc.
 - CCAO-F chia 7 domain **AO1–AO7 = D1–D7** theo exam guide CCAO-F (Claude tự phân loại, xem Lần 12 trong DONG-BO-DU-LIEU.md).
 - `id="wcc-cramp"`: **Học tủ CCAR-P**. Dạng `{ "<số câu>": { "k": "key trong đề", "a": "đáp án tủ" } }`.
